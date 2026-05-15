@@ -3,216 +3,601 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>行业板块主力资金动向</title>
+<title>板块主力资金动向</title>
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body {
-    background: #f2f3f5; color: #1a1d23;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
-    -webkit-font-smoothing: antialiased; line-height: 1.5;
-  }
-  .app { max-width: 940px; margin: 0 auto; padding: 28px 20px 60px; }
+  * {margin:0;padding:0;box-sizing:border-box}
+  body {background:#f5f6f8;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
+  .app {max-width:960px;margin:0 auto;padding:20px 16px 60px}
 
-  .header { text-align: center; margin-bottom: 20px; }
-  .header h1 { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
-  .header .sub { font-size: 12px; color: #80868b; margin-top: 3px; }
+  .header {text-align:center;margin-bottom:20px}
+  .header h1 {font-size:20px;font-weight:700}
+  .header .sub {font-size:12px;color:#80868b;margin-top:3px}
 
-  .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 24px; }
-  .stat { background: #fff; border-radius: 14px; padding: 16px 18px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); border: 1px solid #e8eaed; }
-  .stat .lbl { font-size: 11px; color: #80868b; font-weight: 500; margin-bottom: 6px; }
-  .stat .val { font-size: 24px; font-weight: 700; letter-spacing: -0.5px; }
-  .stat .sub { font-size: 10px; color: #80868b; margin-top: 3px; }
-  .val.positive { color: #e53935; } .val.negative { color: #0d904f; } .val.neutral { color: #1a1d23; }
+  .stats {display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+  .stat {background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;text-align:center}
+  .stat .lbl {font-size:10px;color:#80868b;font-weight:500}
+  .stat .val {font-size:22px;font-weight:700;margin:4px 0}
+  .stat .sub {font-size:10px;color:#80868b}
+  .val.red {color:#e53935}.val.green {color:#0d904f}.val.dark {color:#1a1d23}
 
-  .columns { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+  .panels {display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px}
 
-  .col-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; padding: 0 4px; }
-  .col-header .dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
-  .col-header .dot.in { background: #e53935; box-shadow: 0 0 6px rgba(229,57,53,0.3); }
-  .col-header .dot.out { background: #0d904f; box-shadow: 0 0 6px rgba(13,144,79,0.3); }
-  .col-header h2 { font-size: 15px; font-weight: 650; }
-  .col-header .count { font-size: 11px; color: #80868b; }
-  .col-header .count em { font-style: normal; font-weight: 600; color: #1a1d23; }
+  .panel {background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden}
+  .panel-head {padding:14px 18px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;gap:8px}
+  .panel-head .dot {width:8px;height:8px;border-radius:3px;flex-shrink:0}
+  .dot.red {background:#e53935}.dot.green {background:#0d904f}.dot.blue {background:#1a73e8}
+  .panel-head h2 {font-size:14px;font-weight:650}
+  .panel-head .tag {font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+  .tag-bull {background:#fef2f2;color:#e53935}.tag-bear {background:#f0fdf4;color:#0d904f}
 
-  .cards { display: flex; flex-direction: column; gap: 8px; }
-  .card {
-    background: #fff; border-radius: 12px; padding: 16px 18px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04); border: 1px solid #e8eaed;
-    transition: all 0.15s; cursor: default; border-left: 3px solid transparent;
-  }
-  .card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.07); transform: translateY(-1px); }
-  .card.in { border-left-color: #e53935; }
-  .card.out { border-left-color: #0d904f; }
+  .panel-body {padding:8px 0;max-height:420px;overflow-y:auto}
+  .item {display:flex;align-items:center;gap:12px;padding:10px 18px;border-bottom:1px solid #f0f1f3;transition:background 0.12s}
+  .item:hover {background:#f8f9fb}
+  .item:last-child {border-bottom:none}
+  .item .rank {width:22px;font-size:12px;color:#80868b;text-align:center;flex-shrink:0}
+  .item .rank.top {color:#e53935;font-weight:700}
+  .item .name {flex:1;min-width:0;font-size:13px;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .item .detail {font-size:10px;color:#80868b;white-space:nowrap}
+  .item .b1 {font-size:14px;font-weight:650;min-width:50px;text-align:right;flex-shrink:0}
+  .b1.positive {color:#e53935}.b1.negative {color:#0d904f}
 
-  .card .top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .card .sector-name { font-size: 14px; font-weight: 650; }
-  .card .score { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 100px; }
-  .score.strong { background: #fef2f2; color: #e53935; }
-  .score.watch { background: #e8f0fe; color: #1a73e8; }
-  .score.hold { background: #fef7e0; color: #e37400; }
-  .score.avoid { background: #f1f3f4; color: #80868b; }
+  .chip {font-size:9px;padding:2px 6px;border-radius:4px;font-weight:500;white-space:nowrap;flex-shrink:0}
+  .chip-in {background:#fef2f2;color:#e53935}
+  .chip-out {background:#f0fdf4;color:#0d904f}
+  .chip-lead {background:#fff7e0;color:#e37400}
+  .chip-warn {background:#e8f0fe;color:#1a73e8}
 
-  .card .metrics { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px 16px; }
-  .card .metric .m-lbl { font-size: 10px; color: #80868b; font-weight: 500; letter-spacing: 0.3px; }
-  .card .metric .m-val { font-size: 17px; font-weight: 650; margin-top: 1px; }
-  .m-val.up { color: #e53935; } .m-val.down { color: #0d904f; } .m-val.plain { color: #1a1d23; }
+  .full-table {background:#fff;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden}
+  .full-table .panel-head {border-bottom:1px solid #e8eaed}
+  table {width:100%;border-collapse:collapse;font-size:12px}
+  thead th {background:#fafbfc;color:#80868b;font-weight:500;font-size:10px;padding:10px 8px;text-align:right;border-bottom:1px solid #e8eaed;position:sticky;top:0}
+  thead th:first-child {text-align:center}thead th:nth-child(2){text-align:left}
+  tbody td {padding:9px 8px;text-align:right;border-bottom:1px solid #f0f1f3}
+  tbody td:first-child {text-align:center;color:#80868b}tbody td:nth-child(2){text-align:left;font-weight:500}
+  tbody tr:hover {background:#f8f9fb}
+  td.up {color:#e53935}td.down {color:#0d904f}
 
-  .card .bar-row { display: flex; align-items: center; gap: 6px; margin: 8px 0; }
-  .card .bar-row .bar-lbl { font-size: 10px; color: #80868b; width: 42px; flex-shrink: 0; text-align: right; }
-  .card .bar-row .bar-bg { flex: 1; height: 3px; border-radius: 2px; background: #f0f1f3; overflow: hidden; }
-  .card .bar-row .bar-fg { height: 100%; border-radius: 2px; }
-  .bar-fg.red { background: #e53935; } .bar-fg.green { background: #0d904f; }
+  .footer {text-align:center;padding:20px 0;font-size:11px;color:#80868b;line-height:1.8}
 
-  .card .bottom { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .stock-tag {
-    font-size: 10px; color: #1a73e8; background: #e8f0fe;
-    padding: 2px 8px; border-radius: 4px; font-weight: 500;
-  }
-  .stock-tag .rank { font-weight: 400; color: #5f6368; font-size: 9px; }
-  .signal-tag { font-size: 10px; padding: 3px 8px; border-radius: 4px; font-weight: 550; }
-  .signal.alert { background: #fef2f2; color: #e53935; }
-  .signal.warn { background: #fef7e0; color: #e37400; }
-  .signal.info { background: #e8f0fe; color: #1a73e8; }
-
-  .sort-info { font-size: 11px; color: #80868b; padding: 4px 8px; margin-bottom: 6px; font-style: italic; }
-
-  .refresh-btn {
-    display: inline-block; margin-top: 8px; padding: 6px 14px;
-    background: #1a73e8; color: #fff; border: none; border-radius: 6px;
-    font-size: 12px; cursor: pointer; text-decoration: none;
-  }
-  .footer { text-align: center; padding: 24px 0 0; margin-top: 28px; border-top: 1px solid #e8eaed; font-size: 11px; color: #80868b; line-height: 1.8; }
-
-  @media (max-width: 740px) {
-    .columns { grid-template-columns: 1fr; }
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .card .metrics { grid-template-columns: 1fr 1fr; }
-  }
+  @media(max-width:700px){.panels{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
-    <h1>行业板块 · 主力资金动向</h1>
-    <div class="sub">2026-05-15 13:55 北京时间 · 数据源: 东方财富 + 增强算法 · 自动更新: 每个交易日 15:30</div>
+    <h1>板块主力资金动向</h1>
+    <div class="sub">数据日期: 2026-05-14 · 生成: 2026-05-15 13:48</div>
   </div>
 
   <div class="stats">
-    <div class="stat"><span class="lbl">行业板块</span><span class="val neutral">90</span><span class="sub">流入 17 · 流出 73</span></div>
-    <div class="stat"><span class="lbl">上涨板块</span><span class="val positive">23</span><span class="sub">下跌 <b style="color:#0d904f">67</b></span></div>
-    <div class="stat"><span class="lbl">净流入合计</span><span class="val positive">+176.2亿</span><span class="sub">17 个行业</span></div>
-    <div class="stat"><span class="lbl">流出预警</span><span class="val negative">10</span><span class="sub">警惕背离信号</span></div>
+    <div class="stat"><span class="lbl">监测板块</span><span class="val dark">1112</span><span class="sub">通达信行业板块</span></div>
+    <div class="stat"><span class="lbl">今日流入</span><span class="val red">99</span><span class="sub">B1>0 板块</span></div>
+    <div class="stat"><span class="lbl">今日流出</span><span class="val green">1013</span><span class="sub">B1<0 板块</span></div>
+    <div class="stat"><span class="lbl">大盘状态</span><span class="val red">bull</span><span class="sub">B1 5日均值</span></div>
   </div>
 
-  <div class="columns">
-    <div>
-      <div class="col-header">
-        <span class="dot in"></span><h2>主力资金流入</h2>
-        <span class="count">共 <em>17</em> 个</span>
+  <div class="panels">
+    <!-- PANEL 1: 空转多 -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="dot red"></span>
+        <h2>空转多预警</h2>
+        <span class="tag tag-bull">多头</span>
       </div>
-      <div class="sort-info">排序：增强评分 ↓（体量 + 质量）</div>
-      <div class="cards" id="inflowCards"></div>
+      <div class="panel-body">
+        <div class="item">
+          <span class="rank top">1</span>
+          <span class="name">电网设备</span>
+          <span class="detail">连续27天翻多</span>
+          <span class="chip chip-lead">领先25天</span>
+          <span class="b1 positive">+0.571</span>
+        </div><div class="item">
+          <span class="rank top">2</span>
+          <span class="name">自动化设备</span>
+          <span class="detail">连续18天翻多</span>
+          <span class="chip chip-lead">领先16天</span>
+          <span class="b1 positive">+0.568</span>
+        </div><div class="item">
+          <span class="rank top">3</span>
+          <span class="name">EDA概念</span>
+          <span class="detail">连续8天翻多</span>
+          <span class="chip chip-lead">领先6天</span>
+          <span class="b1 positive">+0.413</span>
+        </div><div class="item">
+          <span class="rank top">4</span>
+          <span class="name">电信服务</span>
+          <span class="detail">连续8天翻多</span>
+          <span class="chip chip-lead">领先6天</span>
+          <span class="b1 positive">+0.370</span>
+        </div><div class="item">
+          <span class="rank top">5</span>
+          <span class="name">乘用车</span>
+          <span class="detail">连续6天翻多</span>
+          <span class="chip chip-lead">领先4天</span>
+          <span class="b1 positive">+0.303</span>
+        </div><div class="item">
+          <span class="rank top">6</span>
+          <span class="name">汽车热管理</span>
+          <span class="detail">连续5天翻多</span>
+          <span class="chip chip-lead">领先3天</span>
+          <span class="b1 positive">+0.494</span>
+        </div><div class="item">
+          <span class="rank top">7</span>
+          <span class="name">教育培训</span>
+          <span class="detail">连续5天翻多</span>
+          <span class="chip chip-lead">领先3天</span>
+          <span class="b1 positive">+0.520</span>
+        </div><div class="item">
+          <span class="rank top">8</span>
+          <span class="name">次新超跌</span>
+          <span class="detail">连续5天翻多</span>
+          <span class="chip chip-lead">领先3天</span>
+          <span class="b1 positive">+0.396</span>
+        </div>
+      </div>
     </div>
-    <div>
-      <div class="col-header">
-        <span class="dot out"></span><h2>主力资金流出</h2>
-        <span class="count">共 <em>73</em> 个 · 展示前 20</span>
+
+    <!-- PANEL 2: 风格切换 -->
+    <div class="panel">
+      <div class="panel-head">
+        <span class="dot blue"></span>
+        <h2>风格切换追踪</h2>
+        <span class="tag tag-bull">剧烈切换</span>
       </div>
-      <div class="sort-info">排序：增强评分 ↓（体量 + 信号质量）</div>
-      <div class="cards" id="outflowCards"></div>
+      <div class="panel-body">
+        <div class="item">
+          <span class="rank top">1</span>
+          <span class="name">昨ST连板</span>
+          <span class="detail">成交额+431%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">-0.297</span>
+        </div><div class="item">
+          <span class="rank top">2</span>
+          <span class="name">航海装备</span>
+          <span class="detail">成交额+394%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">-0.227</span>
+        </div><div class="item">
+          <span class="rank top">3</span>
+          <span class="name">体育</span>
+          <span class="detail">成交额+323%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">+0.369</span>
+        </div><div class="item">
+          <span class="rank top">4</span>
+          <span class="name">环境监测</span>
+          <span class="detail">成交额+274%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">+0.403</span>
+        </div><div class="item">
+          <span class="rank top">5</span>
+          <span class="name">医疗美容</span>
+          <span class="detail">成交额+223%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">+0.341</span>
+        </div><div class="item">
+          <span class="rank top">6</span>
+          <span class="name">产业互联网</span>
+          <span class="detail">成交额+189%</span>
+          <span class="chip chip-in">流入</span>
+          <span class="b1 positive">-0.215</span>
+        </div>
+        <div style="padding:6px 18px;font-size:11px;color:#80868b;border-bottom:1px solid #f0f1f3">— 资金流出 —</div>
+        <div class="item">
+          <span class="rank">1</span>
+          <span class="name">OLED概念</span>
+          <span class="detail">成交额-6%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">-0.351</span>
+        </div><div class="item">
+          <span class="rank">2</span>
+          <span class="name">AI营销</span>
+          <span class="detail">成交额-5%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">-0.291</span>
+        </div><div class="item">
+          <span class="rank">3</span>
+          <span class="name">乘用车</span>
+          <span class="detail">成交额-5%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">+0.338</span>
+        </div><div class="item">
+          <span class="rank">4</span>
+          <span class="name">煤炭开采</span>
+          <span class="detail">成交额-5%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">+0.336</span>
+        </div><div class="item">
+          <span class="rank">5</span>
+          <span class="name">乘用车</span>
+          <span class="detail">成交额-5%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">-0.121</span>
+        </div><div class="item">
+          <span class="rank">6</span>
+          <span class="name">医疗美容</span>
+          <span class="detail">成交额-5%</span>
+          <span class="chip chip-out">流出</span>
+          <span class="b1 negative">-0.191</span>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL TABLE: 每日B1排名 -->
+  <div class="full-table">
+    <div class="panel-head">
+      <span class="dot green"></span>
+      <h2>每日B1排名（全部板块）</h2>
+      <span class="tag tag-bull">99流入 / 1013流出</span>
+    </div>
+    <div style="max-height:500px;overflow-y:auto">
+    <table>
+      <thead><tr>
+        <th>#</th><th>板块</th><th>涨跌</th><th>成交(亿)</th><th>宽度</th><th>B1</th><th>动向</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>先进封装</td>
+          <td class="up">+0.71%</td>
+          <td>3027</td>
+          <td>49%</td>
+          <td class="up">+0.535</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>2</td><td>产业互联网</td>
+          <td class="up">+1.08%</td>
+          <td>100</td>
+          <td>100%</td>
+          <td class="up">+0.531</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>3</td><td>电网设备</td>
+          <td class="up">+0.22%</td>
+          <td>2649</td>
+          <td>46%</td>
+          <td class="up">+0.521</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>4</td><td>文娱用品</td>
+          <td class="up">+0.14%</td>
+          <td>204</td>
+          <td>84%</td>
+          <td class="up">+0.514</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>5</td><td>文娱用品</td>
+          <td class="up">+0.14%</td>
+          <td>204</td>
+          <td>84%</td>
+          <td class="up">+0.514</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>6</td><td>国证芯片</td>
+          <td class="up">+2.57%</td>
+          <td>130</td>
+          <td>87%</td>
+          <td class="up">+0.507</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>7</td><td>sh880034</td>
+          <td class="up">+1.88%</td>
+          <td>8939</td>
+          <td>20%</td>
+          <td class="up">+0.504</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>8</td><td>白色家电</td>
+          <td class="up">+1.46%</td>
+          <td>78</td>
+          <td>90%</td>
+          <td class="up">+0.490</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>9</td><td>工业软件</td>
+          <td class="up">+0.13%</td>
+          <td>232</td>
+          <td>69%</td>
+          <td class="up">+0.473</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>10</td><td>工业软件</td>
+          <td class="up">+0.13%</td>
+          <td>232</td>
+          <td>69%</td>
+          <td class="up">+0.473</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>11</td><td>广播电视</td>
+          <td class="up">+1.03%</td>
+          <td>205</td>
+          <td>69%</td>
+          <td class="up">+0.472</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>12</td><td>体育</td>
+          <td class="up">+1.80%</td>
+          <td>27</td>
+          <td>100%</td>
+          <td class="up">+0.472</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>13</td><td>文娱用品</td>
+          <td class="up">+1.92%</td>
+          <td>97</td>
+          <td>79%</td>
+          <td class="up">+0.468</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>14</td><td>煤炭开采</td>
+          <td class="up">+1.14%</td>
+          <td>1449</td>
+          <td>36%</td>
+          <td class="up">+0.464</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>15</td><td>昨ST首板</td>
+          <td class="up">+0.05%</td>
+          <td>331</td>
+          <td>57%</td>
+          <td class="up">+0.455</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>16</td><td>昨日连板</td>
+          <td class="up">+0.26%</td>
+          <td>221</td>
+          <td>62%</td>
+          <td class="up">+0.453</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>17</td><td>工业气体</td>
+          <td class="up">+1.83%</td>
+          <td>323</td>
+          <td>55%</td>
+          <td class="up">+0.453</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>18</td><td>科创高装</td>
+          <td class="up">+0.40%</td>
+          <td>323</td>
+          <td>55%</td>
+          <td class="up">+0.449</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>19</td><td>EDA概念</td>
+          <td class="up">+1.11%</td>
+          <td>497</td>
+          <td>47%</td>
+          <td class="up">+0.447</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>20</td><td>科创板次新</td>
+          <td class="up">+1.18%</td>
+          <td>355</td>
+          <td>52%</td>
+          <td class="up">+0.447</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>21</td><td>华为算力</td>
+          <td class="up">+0.16%</td>
+          <td>2634</td>
+          <td>17%</td>
+          <td class="up">+0.432</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>22</td><td>人脑工程</td>
+          <td class="up">+0.19%</td>
+          <td>2431</td>
+          <td>18%</td>
+          <td class="up">+0.431</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>23</td><td>电信服务</td>
+          <td class="up">+0.67%</td>
+          <td>191</td>
+          <td>57%</td>
+          <td class="up">+0.431</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>24</td><td>地热能</td>
+          <td class="up">+2.18%</td>
+          <td>55</td>
+          <td>75%</td>
+          <td class="up">+0.430</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>25</td><td>北证专精特新</td>
+          <td class="up">+0.04%</td>
+          <td>734</td>
+          <td>36%</td>
+          <td class="up">+0.429</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>26</td><td>教育培训</td>
+          <td class="up">+0.91%</td>
+          <td>134</td>
+          <td>61%</td>
+          <td class="up">+0.427</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>27</td><td>教育培训</td>
+          <td class="up">+0.91%</td>
+          <td>134</td>
+          <td>61%</td>
+          <td class="up">+0.427</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>28</td><td>汽车服务</td>
+          <td class="up">+1.48%</td>
+          <td>37</td>
+          <td>78%</td>
+          <td class="up">+0.418</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>29</td><td>昨ST首板</td>
+          <td class="up">+5.32%</td>
+          <td>17</td>
+          <td>86%</td>
+          <td class="up">+0.415</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>30</td><td>昨日较强</td>
+          <td class="up">+0.60%</td>
+          <td>264</td>
+          <td>45%</td>
+          <td class="up">+0.409</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>31</td><td>昨日较强</td>
+          <td class="up">+0.60%</td>
+          <td>264</td>
+          <td>45%</td>
+          <td class="up">+0.409</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>32</td><td>科创高装</td>
+          <td class="up">+0.13%</td>
+          <td>259</td>
+          <td>45%</td>
+          <td class="up">+0.407</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>33</td><td>山西板块</td>
+          <td class="up">+0.37%</td>
+          <td>250</td>
+          <td>44%</td>
+          <td class="up">+0.403</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>34</td><td>环境监测</td>
+          <td class="up">+2.04%</td>
+          <td>80</td>
+          <td>60%</td>
+          <td class="up">+0.403</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>35</td><td>地热能</td>
+          <td class="up">+0.58%</td>
+          <td>282</td>
+          <td>40%</td>
+          <td class="up">+0.398</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>36</td><td>专业服务</td>
+          <td class="up">+0.34%</td>
+          <td>224</td>
+          <td>42%</td>
+          <td class="up">+0.392</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>37</td><td>金属新材料</td>
+          <td class="up">+0.25%</td>
+          <td>165</td>
+          <td>46%</td>
+          <td class="up">+0.388</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>38</td><td>电信服务</td>
+          <td class="up">+2.51%</td>
+          <td>26</td>
+          <td>71%</td>
+          <td class="up">+0.386</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>39</td><td>广播电视</td>
+          <td class="up">+0.91%</td>
+          <td>20</td>
+          <td>77%</td>
+          <td class="up">+0.386</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>40</td><td>体育</td>
+          <td class="up">+0.53%</td>
+          <td>39</td>
+          <td>67%</td>
+          <td class="up">+0.386</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>41</td><td>汽车服务</td>
+          <td class="up">+0.54%</td>
+          <td>38</td>
+          <td>67%</td>
+          <td class="up">+0.385</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>42</td><td>汽车服务</td>
+          <td class="up">+0.54%</td>
+          <td>38</td>
+          <td>67%</td>
+          <td class="up">+0.385</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>43</td><td>PEEK材料</td>
+          <td class="up">+0.01%</td>
+          <td>484</td>
+          <td>26%</td>
+          <td class="up">+0.378</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>44</td><td>动力电池回收</td>
+          <td class="up">+0.37%</td>
+          <td>243</td>
+          <td>35%</td>
+          <td class="up">+0.375</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>45</td><td>体育</td>
+          <td class="up">+2.94%</td>
+          <td>24</td>
+          <td>67%</td>
+          <td class="up">+0.369</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>46</td><td>电力</td>
+          <td class="up">+0.16%</td>
+          <td>257</td>
+          <td>31%</td>
+          <td class="up">+0.367</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>47</td><td>近端次新</td>
+          <td class="up">+1.05%</td>
+          <td>119</td>
+          <td>41%</td>
+          <td class="up">+0.362</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>48</td><td>科创板次新</td>
+          <td class="up">+1.27%</td>
+          <td>46</td>
+          <td>52%</td>
+          <td class="up">+0.351</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>49</td><td>汽车服务</td>
+          <td class="up">+0.28%</td>
+          <td>19</td>
+          <td>67%</td>
+          <td class="up">+0.351</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr><tr>
+          <td>50</td><td>DRG-DIP</td>
+          <td class="up">+1.55%</td>
+          <td>44</td>
+          <td>52%</td>
+          <td class="up">+0.351</td>
+          <td><span class="chip chip-in">流入</span></td>
+        </tr>
+      </tbody>
+    </table>
     </div>
   </div>
 
   <div class="footer">
-    排序逻辑 — 流入 & 流出统一：增强评分（体量对数分 + 质量分）<br>
-    数据源：东方财富 · 更新时间：2026-05-15 13:55 北京时间 · 仅供参考 不构成投资建议
+    B1 = sign(chg) x (0.5x成交额 + 0.2x涨跌幅 + 0.3x板块宽度)<br>
+    数据源: 通达信本地日线 · 2026-05-14 · 仅供参考
   </div>
 </div>
-
-<script>
-var INFLOW = [{"sector": "汽车零部件", "change_pct": 1.36, "net_capital": 43.87, "main_capital": 290.74, "follow_capital": 246.87, "company_count": 269, "leading_stock": "双林股份", "enhanced_score": 86.6, "rating": "强烈关注", "direction": "流入", "main_pct": 54.1, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "通用设备", "change_pct": 1.43, "net_capital": 26.76, "main_capital": 322.94, "follow_capital": 296.18, "company_count": 250, "leading_stock": "纽威数控", "enhanced_score": 85.9, "rating": "强烈关注", "direction": "流入", "main_pct": 52.2, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "自动化设备", "change_pct": 2.24, "net_capital": 18.14, "main_capital": 277.17, "follow_capital": 259.03, "company_count": 95, "leading_stock": "锐翔智能", "enhanced_score": 82.8, "rating": "强烈关注", "direction": "流入", "main_pct": 51.7, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "白色家电", "change_pct": 1.17, "net_capital": 28.54, "main_capital": 116.0, "follow_capital": 87.46, "company_count": 45, "leading_stock": "海达尔", "enhanced_score": 81.8, "rating": "强烈关注", "direction": "流入", "main_pct": 57.0, "concentration": "主力高度控盘", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "文化传媒", "change_pct": 0.51, "net_capital": 14.32, "main_capital": 105.71, "follow_capital": 91.39, "company_count": 85, "leading_stock": "粤传媒", "enhanced_score": 77.9, "rating": "强烈关注", "direction": "流入", "main_pct": 53.6, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "专用设备", "change_pct": 0.3, "net_capital": 5.27, "main_capital": 179.38, "follow_capital": 174.12, "company_count": 199, "leading_stock": "东威科技", "enhanced_score": 75.3, "rating": "强烈关注", "direction": "流入", "main_pct": 50.7, "concentration": "主力主导", "eff_label": "温和流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "电机", "change_pct": 4.66, "net_capital": 11.5, "main_capital": 46.05, "follow_capital": 34.55, "company_count": 26, "leading_stock": "三协电机", "enhanced_score": 75, "rating": "强烈关注", "direction": "流入", "main_pct": 57.1, "concentration": "主力高度控盘", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "消费电子", "change_pct": -0.1, "net_capital": 7.29, "main_capital": 377.44, "follow_capital": 370.15, "company_count": 95, "leading_stock": "波导股份", "enhanced_score": 72.3, "rating": "关注", "direction": "流入", "main_pct": 50.5, "concentration": "主力主导", "eff_label": "温和流入", "vp_relation": "逆势吸筹", "outflow_signal": ""}, {"sector": "工程机械", "change_pct": 1.09, "net_capital": 4.38, "main_capital": 32.91, "follow_capital": 28.53, "company_count": 36, "leading_stock": "万达轴承", "enhanced_score": 69.7, "rating": "关注", "direction": "流入", "main_pct": 53.6, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "通信服务", "change_pct": -0.45, "net_capital": 5.84, "main_capital": 163.83, "follow_capital": 157.99, "company_count": 45, "leading_stock": "线上线下", "enhanced_score": 69.5, "rating": "关注", "direction": "流入", "main_pct": 50.9, "concentration": "主力主导", "eff_label": "温和流入", "vp_relation": "逆势吸筹", "outflow_signal": ""}, {"sector": "煤炭开采加工", "change_pct": 0.22, "net_capital": 2.37, "main_capital": 47.28, "follow_capital": 44.91, "company_count": 34, "leading_stock": "昊华能源", "enhanced_score": 68.2, "rating": "关注", "direction": "流入", "main_pct": 51.3, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "小家电", "change_pct": 1.86, "net_capital": 4.31, "main_capital": 15.42, "follow_capital": 11.11, "company_count": 25, "leading_stock": "融捷健康", "enhanced_score": 67, "rating": "关注", "direction": "流入", "main_pct": 58.1, "concentration": "主力高度控盘", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "汽车服务及其他", "change_pct": 0.42, "net_capital": 1.05, "main_capital": 8.36, "follow_capital": 7.31, "company_count": 25, "leading_stock": "北巴传媒", "enhanced_score": 59.2, "rating": "关注", "direction": "流入", "main_pct": 53.4, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "橡胶制品", "change_pct": 0.46, "net_capital": 0.75, "main_capital": 10.69, "follow_capital": 9.94, "company_count": 22, "leading_stock": "科强股份", "enhanced_score": 58.2, "rating": "关注", "direction": "流入", "main_pct": 51.8, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "油气开采及服务", "change_pct": 0.31, "net_capital": 0.45, "main_capital": 15.45, "follow_capital": 15.0, "company_count": 19, "leading_stock": "*ST准油", "enhanced_score": 57.1, "rating": "关注", "direction": "流入", "main_pct": 50.7, "concentration": "主力主导", "eff_label": "温和流入", "vp_relation": "量价配合", "outflow_signal": ""}, {"sector": "非金属材料", "change_pct": -1.92, "net_capital": 0.87, "main_capital": 27.9, "follow_capital": 27.04, "company_count": 14, "leading_stock": "粤桂股份", "enhanced_score": 56.9, "rating": "关注", "direction": "流入", "main_pct": 50.8, "concentration": "主力主导", "eff_label": "温和流入", "vp_relation": "逆势吸筹", "outflow_signal": ""}, {"sector": "公路铁路运输", "change_pct": -0.59, "net_capital": 0.53, "main_capital": 10.01, "follow_capital": 9.48, "company_count": 32, "leading_stock": "龙江交通", "enhanced_score": 49.3, "rating": "观望", "direction": "流入", "main_pct": 51.4, "concentration": "主力主导", "eff_label": "高效流入", "vp_relation": "逆势吸筹", "outflow_signal": ""}];
-var OUTFLOW = [{"sector": "半导体", "change_pct": 0.05, "net_capital": -35.33, "main_capital": 1641.47, "follow_capital": 1676.8, "company_count": 179, "leading_stock": "华海诚科", "enhanced_score": 75.6, "rating": "强烈关注", "direction": "流出", "main_pct": 49.5, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "电池", "change_pct": 0.09, "net_capital": -7.03, "main_capital": 317.68, "follow_capital": 324.71, "company_count": 105, "leading_stock": "滨海能源", "enhanced_score": 63.3, "rating": "关注", "direction": "流出", "main_pct": 49.5, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "通信设备", "change_pct": -1.86, "net_capital": -109.14, "main_capital": 762.29, "follow_capital": 871.43, "company_count": 90, "leading_stock": "长盈通", "enhanced_score": 62.9, "rating": "关注", "direction": "流出", "main_pct": 46.7, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "电子化学品", "change_pct": 0.89, "net_capital": -6.94, "main_capital": 186.51, "follow_capital": 193.45, "company_count": 40, "leading_stock": "中巨芯", "enhanced_score": 58.7, "rating": "关注", "direction": "流出", "main_pct": 49.1, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "化学制品", "change_pct": 0.47, "net_capital": -21.05, "main_capital": 159.28, "follow_capital": 180.34, "company_count": 176, "leading_stock": "怡达股份", "enhanced_score": 57.2, "rating": "关注", "direction": "流出", "main_pct": 46.9, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "元件", "change_pct": -1.77, "net_capital": -60.02, "main_capital": 325.96, "follow_capital": 385.98, "company_count": 62, "leading_stock": "骏亚科技", "enhanced_score": 53.5, "rating": "观望", "direction": "流出", "main_pct": 45.8, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "光伏设备", "change_pct": -2.3, "net_capital": -11.41, "main_capital": 282.25, "follow_capital": 293.67, "company_count": 73, "leading_stock": "阳光电源", "enhanced_score": 52.6, "rating": "观望", "direction": "流出", "main_pct": 49.0, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "塑料制品", "change_pct": 0.56, "net_capital": -3.91, "main_capital": 84.32, "follow_capital": 88.24, "company_count": 79, "leading_stock": "骏鼎达", "enhanced_score": 52.5, "rating": "观望", "direction": "流出", "main_pct": 48.9, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "电力", "change_pct": -1.84, "net_capital": -57.0, "main_capital": 271.43, "follow_capital": 328.43, "company_count": 109, "leading_stock": "京能电力", "enhanced_score": 51.5, "rating": "观望", "direction": "流出", "main_pct": 45.2, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "化学原料", "change_pct": 0.79, "net_capital": -0.64, "main_capital": 58.21, "follow_capital": 58.86, "company_count": 59, "leading_stock": "恒光股份", "enhanced_score": 51.4, "rating": "观望", "direction": "流出", "main_pct": 49.7, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "IT服务", "change_pct": -0.49, "net_capital": -20.2, "main_capital": 206.55, "follow_capital": 226.74, "company_count": 130, "leading_stock": "科远智慧", "enhanced_score": 50.1, "rating": "观望", "direction": "流出", "main_pct": 47.7, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "光学光电子", "change_pct": -1.65, "net_capital": -35.45, "main_capital": 196.49, "follow_capital": 231.93, "company_count": 107, "leading_stock": "光莆股份", "enhanced_score": 49.4, "rating": "观望", "direction": "流出", "main_pct": 45.9, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "电网设备", "change_pct": -1.49, "net_capital": -47.47, "main_capital": 189.57, "follow_capital": 237.04, "company_count": 139, "leading_stock": "维通利", "enhanced_score": 48.9, "rating": "观望", "direction": "流出", "main_pct": 44.4, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "恐慌出逃"}, {"sector": "小金属", "change_pct": -2.12, "net_capital": -6.53, "main_capital": 163.91, "follow_capital": 170.44, "company_count": 29, "leading_stock": "宜安科技", "enhanced_score": 48.3, "rating": "观望", "direction": "流出", "main_pct": 49.0, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "游戏", "change_pct": 0.23, "net_capital": -0.08, "main_capital": 40.66, "follow_capital": 40.74, "company_count": 24, "leading_stock": "宝通科技", "enhanced_score": 48.1, "rating": "观望", "direction": "流出", "main_pct": 50.0, "concentration": "主力主导", "eff_label": "温和流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "家居用品", "change_pct": 0.02, "net_capital": -1.92, "main_capital": 31.97, "follow_capital": 33.9, "company_count": 98, "leading_stock": "高乐股份", "enhanced_score": 46.1, "rating": "观望", "direction": "流出", "main_pct": 48.5, "concentration": "主力主导", "eff_label": "大幅流出", "vp_relation": "量价背离", "outflow_signal": "⚠ 警惕背离"}, {"sector": "计算机设备", "change_pct": -0.83, "net_capital": -30.0, "main_capital": 149.9, "follow_capital": 179.9, "company_count": 83, "leading_stock": "维宏股份", "enhanced_score": 45.8, "rating": "观望", "direction": "流出", "main_pct": 45.5, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "军工装备", "change_pct": -1.23, "net_capital": -40.31, "main_capital": 150.15, "follow_capital": 190.45, "company_count": 83, "leading_stock": "三瑞智能", "enhanced_score": 45.4, "rating": "观望", "direction": "流出", "main_pct": 44.1, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "恐慌出逃"}, {"sector": "软件开发", "change_pct": -0.3, "net_capital": -14.8, "main_capital": 117.49, "follow_capital": 132.29, "company_count": 139, "leading_stock": "索辰科技", "enhanced_score": 44.8, "rating": "观望", "direction": "流出", "main_pct": 47.0, "concentration": "均衡", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "弱势流出"}, {"sector": "工业金属", "change_pct": -3.91, "net_capital": -63.68, "main_capital": 126.92, "follow_capital": 190.6, "company_count": 56, "leading_stock": "鼎胜新材", "enhanced_score": 44.7, "rating": "观望", "direction": "流出", "main_pct": 40.0, "concentration": "跟风活跃", "eff_label": "大幅流出", "vp_relation": "量价齐跌", "outflow_signal": "恐慌出逃"}];
-
-function Fm(v) {
-  if (v == null || isNaN(v)) return '--';
-  var a = Math.abs(v), sign = v < 0 ? '-' : '';
-  return sign + (a >= 100 ? a.toFixed(0) : a.toFixed(1)) + '亿';
-}
-function Fp(v) { if (v == null || isNaN(v)) return '--'; return (v>0?'+':'') + v.toFixed(2) + '%'; }
-function Fp1(v) { if (v == null || isNaN(v)) return '--'; return v.toFixed(1) + '%'; }
-
-function scoreLabel(s) {
-  if (s >= 70) return 'strong';
-  if (s >= 50) return 'watch';
-  if (s >= 30) return 'hold';
-  return 'avoid';
-}
-
-function buildCard(d, type) {
-  var s = d.enhanced_score || 0;
-  var sCls = scoreLabel(s);
-  var netOk = (d.net_capital || 0) >= 0;
-  var chgOk = (d.change_pct || 0) >= 0;
-  var maxMain = 2000;
-
-  var vp = d.vp_relation || '';
-  var vpLabel = '';
-  if (vp === '量价背离') vpLabel = '<span class="signal-tag signal alert">量价背离</span>';
-  else if (vp === '量价齐跌') vpLabel = '<span class="signal-tag signal warn">量价齐跌</span>';
-  else if (vp === '量价配合') vpLabel = '<span class="signal-tag signal info">量价配合</span>';
-  else if (vp === '逆势吸筹') vpLabel = '<span class="signal-tag signal info">逆势吸筹</span>';
-
-  var os = d.outflow_signal || '';
-  var alertLabel = '';
-  if (os.indexOf('警惕') >= 0) alertLabel = '<span class="signal-tag signal alert">' + os + '</span>';
-  else if (os.indexOf('出货') >= 0) alertLabel = '<span class="signal-tag signal warn">' + os + '</span>';
-
-  var mainBarPct = Math.min(100, (Math.abs(d.main_capital || 0)) / maxMain * 100);
-
-  var stocks = d.top_stocks || [];
-  if (stocks.length === 0 && d.leading_stock) stocks = [d.leading_stock];
-  var stockTags = '';
-  for (var i = 0; i < stocks.length; i++) {
-    stockTags += '<span class="stock-tag"><span class="rank">#' + (i+1) + '</span> ' + stocks[i] + '</span>';
-  }
-
-  return '<div class="card ' + type + '">' +
-    '<div class="top">' +
-      '<span class="sector-name">' + d.sector + '</span>' +
-      '<span class="score ' + sCls + '">' + Math.round(s) + '分</span>' +
-    '</div>' +
-    '<div class="metrics">' +
-      '<div class="metric"><span class="m-lbl">净' + (type==='in'?'流入':'流出') + '</span><span class="m-val ' + (netOk?'up':'down') + '">' + Fm(d.net_capital) + '</span></div>' +
-      '<div class="metric"><span class="m-lbl">涨跌幅</span><span class="m-val ' + (chgOk?'up':'down') + '">' + Fp(d.change_pct) + '</span></div>' +
-      '<div class="metric"><span class="m-lbl">主力占比</span><span class="m-val plain">' + Fp1(d.main_pct) + '</span></div>' +
-    '</div>' +
-    '<div class="bar-row">' +
-      '<span class="bar-lbl">主力</span>' +
-      '<span class="bar-bg"><span class="bar-fg ' + (type==='in'?'red':'green') + '" style="width:' + mainBarPct + '%"></span></span>' +
-      '<span style="font-size:11px;color:#5f6368">' + Fm(d.main_capital) + '</span>' +
-    '</div>' +
-    '<div class="bottom">' +
-      (d.concentration ? '<span style="font-size:10px;color:#80868b;margin-right:6px">' + d.concentration + '</span>' : '') +
-      stockTags + vpLabel + alertLabel +
-    '</div>' +
-  '</div>';
-}
-
-function renderInflow() {
-  var html = '';
-  for (var i = 0; i < INFLOW.length; i++) html += buildCard(INFLOW[i], 'in');
-  if (INFLOW.length === 0) html = '<div style="text-align:center;padding:30px;color:#80868b;font-size:13px;background:#fff;border-radius:12px">今日无净流入行业</div>';
-  document.getElementById('inflowCards').innerHTML = html;
-}
-
-function renderOutflow() {
-  var html = '';
-  for (var i = 0; i < OUTFLOW.length; i++) html += buildCard(OUTFLOW[i], 'out');
-  document.getElementById('outflowCards').innerHTML = html;
-}
-
-renderInflow();
-renderOutflow();
-</script>
 </body>
 </html>
