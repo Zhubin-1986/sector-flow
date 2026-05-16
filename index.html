@@ -1,59 +1,166 @@
 <!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>板块资金动向</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>主力资金监控</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:#f5f6f8;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;-webkit-font-smoothing:antialiased}
-.app{max-width:860px;margin:0 auto;padding:20px 16px 60px}
-.header{text-align:center;margin-bottom:16px}
-.header h1{font-size:20px;font-weight:700}
-.header .sub{font-size:12px;color:#80868b}
+body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:20px 16px 40px;-webkit-font-smoothing:antialiased}
+.g{max-width:900px;margin:0 auto}
 
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.stat{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;text-align:center}
-.stat .lbl{font-size:10px;color:#80868b}.stat .val{font-size:22px;font-weight:700;margin:4px 0}
-.val.red{color:#e53935}.val.green{color:#0d904f}.val.dark{color:#1a1d23}
+/* Title */
+.tl{text-align:center;padding:6px 0 16px;font-size:21px;font-weight:700;letter-spacing:3px;color:#1a1d23}
 
-.columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.col{display:flex;flex-direction:column;gap:10px}
-.panel{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden}
-.panel-head{padding:12px 14px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:650}
-.panel-head .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.dot-c{background:#e53935}.dot-s{background:#1a73e8}.dot-v{background:#e37400}
-.panel-body{padding:4px 0;max-height:360px;overflow-y:auto}
-.item{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f0f1f3;font-size:12px}
-.item .rk{width:18px;text-align:center;color:#80868b;font-size:11px;flex-shrink:0}
-.item .nm{flex:1;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item .data{font-size:10px;color:#80868b;white-space:nowrap}.item .b1{font-size:13px;font-weight:650;min-width:42px;text-align:right}
-.b1.pos{color:#e53935}.b1.neg{color:#0d904f}
+/* Header card */
+.hd{background:#fff;border-radius:12px;padding:16px 20px;margin-bottom:12px;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.hd-top{display:flex;align-items:center;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.hd .tag{font-size:12px;font-weight:700;padding:4px 14px;border-radius:100px;color:#fff;background:#e53935;white-space:nowrap}
+.hd .date{font-size:13px;color:#5f6368}
+.hd .date b{color:#1a1d23}
 
-.full-table{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden;margin-bottom:16px}
-.footer{text-align:center;padding:20px 0;font-size:10px;color:#80868b;line-height:1.8}
-@media(max-width:700px){.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
-</style></head><body><div class="app">
-<div class="header"><h1>板块主力资金动向</h1>
-<div class="sub">2026-05-15 · 多头区间 · 回调中</div></div>
+/* Metric cards */
+.mcards{display:flex;gap:8px;flex-wrap:wrap}
+.mc{background:#f8f9fa;border-radius:8px;padding:8px 14px;text-align:center;min-width:64px;flex:1}
+.mc .lbl{font-size:10px;color:#80868b;display:block;margin-bottom:2px}
+.mc .val{font-size:15px;font-weight:700}
+.mc .val.up{color:#e53935}.mc .val.dn{color:#0d904f}.mc .val.warn{color:#e37400}
 
-<div class="stats">
-<div class="stat"><span class="lbl">行业/概念</span><span class="val dark">126/269</span></div>
-<div class="stat"><span class="lbl">流入</span><span class="val red">27</span></div>
-<div class="stat"><span class="lbl">流出</span><span class="val green">99</span></div>
-<div class="stat"><span class="lbl">DIF</span><span class="val red">46</span></div>
+/* Strategy line */
+.stl{font-size:11px;color:#5f6368;margin-top:10px;line-height:1.6}
+.stl b{color:#1a1d23}
+
+/* Market note */
+.note{border-radius:8px;padding:10px 14px;margin-top:10px;line-height:1.5}
+.note .nt{font-size:12px;font-weight:650;margin-bottom:2px}
+.note .nd{font-size:10px;color:#5f6368;line-height:1.6}
+.note.danger{background:#fef2f2;border:1px solid #fecaca}
+.note.danger .nt{color:#991b1b}
+.note.warn{background:#fff8e6;border:1px solid #ffe0a0}
+.note.warn .nt{color:#92500e}
+.note.good{background:#e8f5e9;border:1px solid #b9dfc5}
+.note.good .nt{color:#1b5e20}
+.note.great{background:#e3f2fd;border:1px solid #b3d8f2}
+.note.great .nt{color:#1a5fa8}
+.note.info{background:#e8eaf0;border:1px solid #d0d3d9}
+.note.info .nt{color:#5f6368}
+
+/* Theme pills */
+.stl.theme{display:flex;gap:8px;flex-wrap:wrap}
+.tp{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:3px 8px;border-radius:4px;background:#e8f0fe;color:#1a5fa8;font-weight:500}
+.tp b{font-size:11px;font-weight:700}
+.tp.new{background:#fce4ec;color:#880e4f;border:1px dashed #e91e63}
+
+/* Pool panels */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.pn{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.pn .ph{padding:12px 16px;font-size:12px;font-weight:650;border-bottom:1px solid #e8eaed;display:flex;align-items:center;gap:8px}
+.pn .ph .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#e53935}
+.pn .ph .lbl{font-size:10px;color:#80868b;font-weight:400;margin-left:auto}
+/* Column header */
+.ch{display:flex;align-items:center;gap:8px;padding:6px 16px;font-size:10px;color:#9aa0a6;border-bottom:1px solid #f0f1f3;font-weight:500}
+.ch .cn{flex:1}.ch .ca{min-width:48px;text-align:right}.ch .cb{min-width:44px;text-align:right}.ch .cd{min-width:54px;text-align:right}.ch .cy{min-width:28px;text-align:center}
+
+/* Pool row */
+.r{display:flex;align-items:center;gap:8px;padding:9px 16px;border-bottom:1px solid #f5f6f8;transition:background 0.1s}
+.r:hover{background:#fafbfc}
+.r .nm{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .bl{font-size:11px;min-width:44px;text-align:right;color:#80868b}
+.r .dl{font-size:15px;font-weight:700;min-width:54px;text-align:right}
+.r .am{font-size:10px;min-width:48px;text-align:right;color:#9aa0a6;font-weight:400}
+.r .dy{font-size:9px;min-width:28px;text-align:center;padding:2px 0;border-radius:3px;background:#f0f1f3;color:#5f6368;font-weight:600}
+.up{color:#e53935}.dn{color:#0d904f}.mute{color:#9aa0a6}
+
+/* Snapshot */
+.snap{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+.snap .ph{padding:12px 16px;font-size:12px;font-weight:650;border-bottom:1px solid #e8eaed}
+.snap-cols{display:grid;grid-template-columns:1fr 1fr}
+.snap-col{padding:4px 0}
+.snap-col+.snap-col{border-left:1px solid #f0f1f3}
+.sh{display:flex;align-items:center;padding:5px 16px 3px;font-size:10px;color:#9aa0a6;gap:8px}
+.sh .sl{flex:1;font-weight:600}
+.sr{display:flex;align-items:center;gap:8px;padding:4px 16px;font-size:11px}
+.sr .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr .sd{font-size:10px;min-width:44px;text-align:right}
+.sr .sv{font-size:12px;font-weight:650;min-width:44px;text-align:right}
+
+.ft{text-align:center;padding:18px 0 8px;font-size:10px;color:#9aa0a6;line-height:1.7}
+@media(max-width:640px){.cols,.snap-cols{grid-template-columns:1fr}.snap-col+.snap-col{border-left:none;border-top:1px solid #f0f1f3}.mc{min-width:56px}}
+</style></head><body><div class="g">
+
+<div class="tl">主力资金监控</div>
+
+<div class="hd">
+<div class="hd-top">
+<span class="tag">强牛</span>
+<span class="date"><b>2026-05-15</b> · AMV active · 参考起点2026-05-13 · 中段池 × B1改善 · 胜率~50%</span>
+</div>
+<div class="mcards">
+<div class="mc"><span class="lbl">DIF</span><span class="val up">↑46</span></div>
+<div class="mc"><span class="lbl">大盘</span><span class="val dn">-1.0%</span></div>
+<div class="mc"><span class="lbl">广度</span><span class="val dn">21%</span></div>
+<div class="mc"><span class="lbl">更替</span><span class="val dn">82%</span></div>
+</div>
+<div class="stl"><b>跟踪新资金流入方向</b> · 中段池(12.5-85%) · B1改善排序 · 行业11个候选 · 概念9个候选</div>
+<div class="stl theme"><span class="tp">机器人/智造<b>10</b></span><span class="tp">消费/红利<b>3</b></span></div>
+<div class="note danger"><div class="nt">赚钱效应弱 —— 短线回避，中线等企稳</div><div class="nd">广度仅21%且更替82%：资金高度集中+快速轮动。回测：3日+0.0%、5日+0.1%、20日+0.6%。短线(3-5日)赚钱效应极弱，轻仓或观望；中线(20日)可恢复，等广度回升再入场。</div></div>
 </div>
 
-<div class="columns"><div class="col" style="border-right:1px solid #e8eaed;padding-right:5px"><div class="panel"><div class="panel-head"><span class="dot dot-c"></span>行业 · 回调蓄力</div><div class="panel-body">
-<div style="font-size:9px;color:#80868b;padding:4px 14px">B1Δ↓ 持续改善 · 近4日回调</div><div class="item"><span class="rk">1</span><span class="nm">煤炭开采</span><span class="data">连续2天</span><span class="b1 pos">+0.825</span></div><div class="item"><span class="rk">2</span><span class="nm">油气开采</span><span class="data">连续2天</span><span class="b1 pos">+0.686</span></div><div class="item"><span class="rk">3</span><span class="nm">家居用品</span><span class="data">连续2天</span><span class="b1 pos">+0.677</span></div><div class="item"><span class="rk">4</span><span class="nm">出版业</span><span class="data">连续2天</span><span class="b1 pos">+0.627</span></div><div class="item"><span class="rk">5</span><span class="nm">文娱用品</span><span class="data">连续2天</span><span class="b1 pos">+0.588</span></div><div class="item"><span class="rk">6</span><span class="nm">公路铁路</span><span class="data">连续2天</span><span class="b1 pos">+0.580</span></div><div class="item"><span class="rk">7</span><span class="nm">动物保健</span><span class="data">连续2天</span><span class="b1 pos">+0.516</span></div><div class="item"><span class="rk">8</span><span class="nm">电机制造</span><span class="data">连续1天</span><span class="b1 pos">+0.278</span></div><div class="item"><span class="rk">9</span><span class="nm">白色家电</span><span class="data">连续2天</span><span class="b1 pos">+0.161</span></div><div class="item"><span class="rk">10</span><span class="nm">油服工程</span><span class="data">连续1天</span><span class="b1 pos">+0.135</span></div></div></div></div><div class="col" style="padding-left:5px"><div class="panel"><div class="panel-head"><span class="dot dot-v"></span>概念 · 回调蓄力</div><div class="panel-body">
-<div style="font-size:9px;color:#80868b;padding:4px 14px">B1Δ↓ 持续改善 · 近4日回调</div><div class="item"><span class="rk">1</span><span class="nm">减速器</span><span class="data">连续1天</span><span class="b1 pos">+0.274</span></div><div class="item"><span class="rk">2</span><span class="nm">外骨骼机器人</span><span class="data">连续1天</span><span class="b1 pos">+0.135</span></div><div class="item"><span class="rk">3</span><span class="nm">氟概念</span><span class="data">连续1天</span><span class="b1 pos">+0.108</span></div><div class="item"><span class="rk">4</span><span class="nm">仿制药</span><span class="data">连续2天</span><span class="b1 pos">+0.047</span></div><div class="item"><span class="rk">5</span><span class="nm">工业母机</span><span class="data">连续1天</span><span class="b1 pos">+0.054</span></div><div class="item"><span class="rk">6</span><span class="nm">人形机器人</span><span class="data">连续1天</span><span class="b1 pos">+0.050</span></div><div class="item"><span class="rk">7</span><span class="nm">PEEK材料</span><span class="data">连续1天</span><span class="b1 pos">+0.044</span></div><div class="item"><span class="rk">8</span><span class="nm">一体压铸</span><span class="data">连续1天</span><span class="b1 pos">+0.035</span></div><div class="item"><span class="rk">9</span><span class="nm">工业软件</span><span class="data">连续1天</span><span class="b1 pos">+0.021</span></div><div class="item"><span class="rk">10</span><span class="nm">汽车热管理</span><span class="data">连续1天</span><span class="b1 pos">+0.014</span></div></div></div></div></div>
-
-<div class="full-table"><div class="panel-head">全板块 B1 排名 · 27入/99出</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
-<div style="border-right:1px solid #e8eaed">
-<div style="font-size:11px;font-weight:600;color:#e53935;padding:8px 14px;border-bottom:1px solid #e8eaed">流入 TOP 10</div>
-<div class="item"><span class="rk">1</span><span class="nm">电机制造</span><span class="b1 pos">+0.689</span></div><div class="item"><span class="rk">2</span><span class="nm">自动化设备</span><span class="b1 pos">+0.648</span></div><div class="item"><span class="rk">3</span><span class="nm">汽车零部件</span><span class="b1 pos">+0.623</span></div><div class="item"><span class="rk">4</span><span class="nm">广告营销</span><span class="b1 pos">+0.618</span></div><div class="item"><span class="rk">5</span><span class="nm">家电零部件</span><span class="b1 pos">+0.589</span></div><div class="item"><span class="rk">6</span><span class="nm">通用设备</span><span class="b1 pos">+0.583</span></div><div class="item"><span class="rk">7</span><span class="nm">产业互联网</span><span class="b1 pos">+0.481</span></div><div class="item"><span class="rk">8</span><span class="nm">煤炭开采</span><span class="b1 pos">+0.478</span></div><div class="item"><span class="rk">9</span><span class="nm">油气开采</span><span class="b1 pos">+0.476</span></div><div class="item"><span class="rk">10</span><span class="nm">工程机械</span><span class="b1 pos">+0.474</span></div>
+<div class="cols">
+<div class="pn">
+<div class="ph"><span class="dot"></span>策略池 · 行业<span class="lbl">中段池 B1改善↓</span></div>
+<div class="ch"><span class="cn">板块</span><span class="ca">成交</span><span class="cb">B1</span><span class="cd">Δ改善</span><span class="cy">持续</span></div>
+<div class="r"><span class="nm">油气开采</span><span class="am">50亿</span><span class="bl up">+0.48</span><span class="dl up">+0.69</span><span class="dy">2d</span></div>
+<div class="r"><span class="nm">文娱用品</span><span class="am">31亿</span><span class="bl up">+0.33</span><span class="dl up">+0.59</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">动物保健</span><span class="am">21亿</span><span class="bl up">+0.25</span><span class="dl up">+0.52</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">电机制造</span><span class="am">149亿</span><span class="bl up">+0.69</span><span class="dl up">+0.28</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">白色家电</span><span class="am">82亿</span><span class="bl up">+0.43</span><span class="dl up">+0.16</span><span class="dy">3d</span></div>
+<div class="r"><span class="nm">油服工程</span><span class="am">37亿</span><span class="bl up">+0.38</span><span class="dl up">+0.13</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">家电零部件</span><span class="am">238亿</span><span class="bl up">+0.59</span><span class="dl up">+0.08</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">自动化设备</span><span class="am">795亿</span><span class="bl up">+0.65</span><span class="dl up">+0.07</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">汽车零部件</span><span class="am">991亿</span><span class="bl up">+0.62</span><span class="dl up">+0.05</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">小家电</span><span class="am">55亿</span><span class="bl up">+0.47</span><span class="dl up">+0.04</span><span class="dy mute">-</span></div>
 </div>
-<div>
-<div style="font-size:11px;font-weight:600;color:#0d904f;padding:8px 14px;border-bottom:1px solid #e8eaed">流出 TOP 10</div>
-<div class="item"><span class="rk">1</span><span class="nm">半导体</span><span class="b1 neg">-0.618</span></div><div class="item"><span class="rk">2</span><span class="nm">通信设备</span><span class="b1 neg">-0.520</span></div><div class="item"><span class="rk">3</span><span class="nm">电池</span><span class="b1 neg">-0.503</span></div><div class="item"><span class="rk">4</span><span class="nm">消费电子</span><span class="b1 neg">-0.503</span></div><div class="item"><span class="rk">5</span><span class="nm">专用设备</span><span class="b1 neg">-0.491</span></div><div class="item"><span class="rk">6</span><span class="nm">元器件</span><span class="b1 neg">-0.478</span></div><div class="item"><span class="rk">7</span><span class="nm">工业金属</span><span class="b1 neg">-0.473</span></div><div class="item"><span class="rk">8</span><span class="nm">光学光电</span><span class="b1 neg">-0.471</span></div><div class="item"><span class="rk">9</span><span class="nm">玻璃玻纤</span><span class="b1 neg">-0.468</span></div><div class="item"><span class="rk">10</span><span class="nm">其他电子</span><span class="b1 neg">-0.466</span></div>
+<div class="pn">
+<div class="ph"><span class="dot"></span>策略池 · 概念<span class="lbl">中段池 B1改善↓</span></div>
+<div class="ch"><span class="cn">板块</span><span class="ca">成交</span><span class="cb">B1</span><span class="cd">Δ改善</span><span class="cy">持续</span></div>
+<div class="r"><span class="nm">减速器</span><span class="am">1163亿</span><span class="bl up">+0.76</span><span class="dl up">+0.27</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">外骨骼机器人</span><span class="am">215亿</span><span class="bl up">+0.52</span><span class="dl up">+0.13</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">氟概念</span><span class="am">836亿</span><span class="bl up">+0.68</span><span class="dl up">+0.11</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">人形机器人</span><span class="am">4930亿</span><span class="bl up">+0.70</span><span class="dl up">+0.05</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">工业母机</span><span class="am">1024亿</span><span class="bl up">+0.60</span><span class="dl up">+0.05</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">PEEK材料</span><span class="am">467亿</span><span class="bl up">+0.56</span><span class="dl up">+0.04</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">一体压铸</span><span class="am">332亿</span><span class="bl up">+0.53</span><span class="dl up">+0.03</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">工业软件</span><span class="am">255亿</span><span class="bl up">+0.47</span><span class="dl up">+0.02</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">汽车热管理</span><span class="am">1031亿</span><span class="bl up">+0.58</span><span class="dl up">+0.01</span><span class="dy mute">-</span></div>
+</div>
+</div>
+
+<div class="snap">
+<div class="ph">全板块 B1 快照</div>
+<div class="snap-cols">
+<div class="snap-col">
+<div class="sh"><span class="sl" style="color:#e53935">流入 TOP 10</span><span style="min-width:44px;text-align:right">Δ</span><span style="min-width:44px;text-align:right">B1</span></div>
+<div class="sr"><span class="n">电机制造</span><span class="sd up">+0.02</span><span class="sv up">+0.69</span></div>
+<div class="sr"><span class="n">自动化设备</span><span class="sd dn">-0.01</span><span class="sv up">+0.65</span></div>
+<div class="sr"><span class="n">汽车零部件</span><span class="sd dn">-0.10</span><span class="sv up">+0.62</span></div>
+<div class="sr"><span class="n">广告营销</span><span class="sd up">+1.07</span><span class="sv up">+0.62</span></div>
+<div class="sr"><span class="n">家电零部件</span><span class="sd dn">-0.04</span><span class="sv up">+0.59</span></div>
+<div class="sr"><span class="n">通用设备</span><span class="sd dn">-0.09</span><span class="sv up">+0.58</span></div>
+<div class="sr"><span class="n">产业互联网</span><span class="sd up">+0.82</span><span class="sv up">+0.48</span></div>
+<div class="sr"><span class="n">煤炭开采</span><span class="sd up">+0.81</span><span class="sv up">+0.48</span></div>
+<div class="sr"><span class="n">油气开采</span><span class="sd up">+0.78</span><span class="sv up">+0.48</span></div>
+<div class="sr"><span class="n">工程机械</span><span class="sd up">+0.95</span><span class="sv up">+0.47</span></div>
+</div>
+<div class="snap-col">
+<div class="sh"><span class="sl" style="color:#0d904f">流出 TOP 10</span><span style="min-width:44px;text-align:right">Δ</span><span style="min-width:44px;text-align:right">B1</span></div>
+<div class="sr"><span class="n">半导体</span><span class="sd up">+0.01</span><span class="sv dn">-0.62</span></div>
+<div class="sr"><span class="n">通信设备</span><span class="sd dn">-1.26</span><span class="sv dn">-0.52</span></div>
+<div class="sr"><span class="n">电池</span><span class="sd up">+0.05</span><span class="sv dn">-0.50</span></div>
+<div class="sr"><span class="n">消费电子</span><span class="sd dn">-1.14</span><span class="sv dn">-0.50</span></div>
+<div class="sr"><span class="n">专用设备</span><span class="sd dn">-1.12</span><span class="sv dn">-0.49</span></div>
+<div class="sr"><span class="n">元器件</span><span class="sd dn">-1.11</span><span class="sv dn">-0.48</span></div>
+<div class="sr"><span class="n">工业金属</span><span class="sd dn">-1.03</span><span class="sv dn">-0.47</span></div>
+<div class="sr"><span class="n">光学光电</span><span class="sd dn">-1.13</span><span class="sv dn">-0.47</span></div>
+<div class="sr"><span class="n">玻璃玻纤</span><span class="sd dn">-0.95</span><span class="sv dn">-0.47</span></div>
+<div class="sr"><span class="n">其他电子</span><span class="sd dn">-0.08</span><span class="sv dn">-0.47</span></div>
 </div></div></div>
 
-<div class="footer">数据源:通达信本地日线 · 2026-05-16 10:05 · 仅供参考 不构成投资建议</div>
+<div class="ft">2026-05-16 22:05 · B1=0.4成交+0.2涨跌+0.4宽度 · Δ=5日B1变化 · 持续=连续正B1天数 · 回测AMV×DIF六场景 · 仅供参考</div>
 </div></body></html>
