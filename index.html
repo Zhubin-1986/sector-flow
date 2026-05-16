@@ -6,14 +6,15 @@ body{background:#f5f6f8;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 .app{max-width:860px;margin:0 auto;padding:20px 16px 60px}
 .header{text-align:center;margin-bottom:16px}
 .header h1{font-size:20px;font-weight:700}
-.header .sub{font-size:12px;color:#80868b;margin-top:2px}
+.header .sub{font-size:12px;color:#80868b}
 
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
 .stat{background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;text-align:center}
 .stat .lbl{font-size:10px;color:#80868b}.stat .val{font-size:22px;font-weight:700;margin:4px 0}
 .val.red{color:#e53935}.val.green{color:#0d904f}.val.dark{color:#1a1d23}
 
-.panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px}
+.columns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.col{display:flex;flex-direction:column;gap:10px}
 .panel{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden}
 .panel-head{padding:12px 14px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;gap:6px;font-size:13px;font-weight:650}
 .panel-head .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
@@ -22,38 +23,26 @@ body{background:#f5f6f8;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 .item{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid #f0f1f3;font-size:12px}
 .item .rk{width:18px;text-align:center;color:#80868b;font-size:11px;flex-shrink:0}
 .item .nm{flex:1;font-weight:550;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.item .data{font-size:10px;color:#80868b;white-space:nowrap}
-.item .b1{font-size:13px;font-weight:650;min-width:42px;text-align:right}
+.item .data{font-size:10px;color:#80868b;white-space:nowrap}.item .b1{font-size:13px;font-weight:650;min-width:42px;text-align:right}
 .b1.pos{color:#e53935}.b1.neg{color:#0d904f}
 
-.full-table{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden}
-.full-table .panel-head{border-bottom:1px solid #e8eaed}
-table{width:100%;border-collapse:collapse;font-size:11px}
-thead th{background:#fafbfc;color:#80868b;font-weight:500;font-size:10px;padding:8px 6px;text-align:right;border-bottom:1px solid #e8eaed;position:sticky;top:0}
-thead th:first-child{text-align:center}thead th:nth-child(2){text-align:left}
-tbody td{padding:7px 6px;text-align:right;border-bottom:1px solid #f0f1f3}
-tbody td:first-child{text-align:center;color:#80868b}tbody td:nth-child(2){text-align:left;font-weight:500}
-tbody tr:hover{background:#f8f9fb}
-td.up{color:#e53935}td.down{color:#0d904f}
+.full-table{background:#fff;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.04);border:1px solid #e8eaed;overflow:hidden;margin-bottom:16px}
 .footer{text-align:center;padding:20px 0;font-size:10px;color:#80868b;line-height:1.8}
-@media(max-width:700px){.panels{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:700px){.columns{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}}
 </style></head><body><div class="app">
 <div class="header"><h1>板块主力资金动向</h1>
 <div class="sub">2026-05-15 · 多头区间 · 回调中</div></div>
 
 <div class="stats">
-<div class="stat"><span class="lbl">板块数</span><span class="val dark">126</span></div>
+<div class="stat"><span class="lbl">行业/概念</span><span class="val dark">126/269</span></div>
 <div class="stat"><span class="lbl">流入</span><span class="val red">27</span></div>
 <div class="stat"><span class="lbl">流出</span><span class="val green">99</span></div>
 <div class="stat"><span class="lbl">DIF</span><span class="val red">46</span></div>
 </div>
 
-
-<div class="panels" style="grid-template-columns:1fr">
-<div class="panel"><div class="panel-head"><span class="dot dot-c"></span>回调监控 · 持续改善的蓄力板块</div><div class="panel-body">
-<div style="font-size:9px;color:#80868b;padding:4px 14px">按持久性+累积B1Δ↓ · 只展示回调期间B1持续改善的板块 · 89%概率命中重启龙头</div>
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:0"><div class="item"><span class="rk">1</span><span class="nm">煤炭开采</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.825</span></div><div class="item"><span class="rk">2</span><span class="nm">油气开采</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.686</span></div><div class="item"><span class="rk">3</span><span class="nm">家居用品</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.677</span></div><div class="item"><span class="rk">4</span><span class="nm">出版业</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.627</span></div><div class="item"><span class="rk">5</span><span class="nm">文娱用品</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.588</span></div><div class="item"><span class="rk">6</span><span class="nm">公路铁路</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.580</span></div><div class="item"><span class="rk">7</span><span class="nm">动物保健</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.516</span></div><div class="item"><span class="rk">8</span><span class="nm">电机制造</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.278</span></div><div class="item"><span class="rk">9</span><span class="nm">白色家电</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.161</span></div><div class="item"><span class="rk">10</span><span class="nm">油服工程</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.135</span></div><div class="item"><span class="rk">11</span><span class="nm">日用化工</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.102</span></div><div class="item"><span class="rk">12</span><span class="nm">家电零部件</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.080</span></div><div class="item"><span class="rk">13</span><span class="nm">自动化设备</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.071</span></div><div class="item"><span class="rk">14</span><span class="nm">汽车零部件</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.052</span></div><div class="item"><span class="rk">15</span><span class="nm">装饰建材</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.052</span></div><div class="item"><span class="rk">16</span><span class="nm">小家电</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.037</span></div><div class="item"><span class="rk">17</span><span class="nm">调味品</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.036</span></div><div class="item"><span class="rk">18</span><span class="nm">工程机械</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.029</span></div><div class="item"><span class="rk">19</span><span class="nm">医药商业</span><span class="data">持续改善2天</span><span class="b1 pos">Δ+0.028</span></div><div class="item"><span class="rk">20</span><span class="nm">广告营销</span><span class="data">持续改善1天</span><span class="b1 pos">Δ+0.003</span></div></div>
-</div></div></div>
+<div class="columns"><div class="col" style="border-right:1px solid #e8eaed;padding-right:5px"><div class="panel"><div class="panel-head"><span class="dot dot-c"></span>行业 · 回调蓄力</div><div class="panel-body">
+<div style="font-size:9px;color:#80868b;padding:4px 14px">B1Δ↓ 持续改善 · 近4日回调</div><div class="item"><span class="rk">1</span><span class="nm">煤炭开采</span><span class="data">连续2天</span><span class="b1 pos">+0.825</span></div><div class="item"><span class="rk">2</span><span class="nm">油气开采</span><span class="data">连续2天</span><span class="b1 pos">+0.686</span></div><div class="item"><span class="rk">3</span><span class="nm">家居用品</span><span class="data">连续2天</span><span class="b1 pos">+0.677</span></div><div class="item"><span class="rk">4</span><span class="nm">出版业</span><span class="data">连续2天</span><span class="b1 pos">+0.627</span></div><div class="item"><span class="rk">5</span><span class="nm">文娱用品</span><span class="data">连续2天</span><span class="b1 pos">+0.588</span></div><div class="item"><span class="rk">6</span><span class="nm">公路铁路</span><span class="data">连续2天</span><span class="b1 pos">+0.580</span></div><div class="item"><span class="rk">7</span><span class="nm">动物保健</span><span class="data">连续2天</span><span class="b1 pos">+0.516</span></div><div class="item"><span class="rk">8</span><span class="nm">电机制造</span><span class="data">连续1天</span><span class="b1 pos">+0.278</span></div><div class="item"><span class="rk">9</span><span class="nm">白色家电</span><span class="data">连续2天</span><span class="b1 pos">+0.161</span></div><div class="item"><span class="rk">10</span><span class="nm">油服工程</span><span class="data">连续1天</span><span class="b1 pos">+0.135</span></div></div></div></div><div class="col" style="padding-left:5px"><div class="panel"><div class="panel-head"><span class="dot dot-v"></span>概念 · 回调蓄力</div><div class="panel-body">
+<div style="font-size:9px;color:#80868b;padding:4px 14px">B1Δ↓ 持续改善 · 近4日回调</div><div class="item"><span class="rk">1</span><span class="nm">减速器</span><span class="data">连续1天</span><span class="b1 pos">+0.274</span></div><div class="item"><span class="rk">2</span><span class="nm">外骨骼机器人</span><span class="data">连续1天</span><span class="b1 pos">+0.135</span></div><div class="item"><span class="rk">3</span><span class="nm">氟概念</span><span class="data">连续1天</span><span class="b1 pos">+0.108</span></div><div class="item"><span class="rk">4</span><span class="nm">仿制药</span><span class="data">连续2天</span><span class="b1 pos">+0.047</span></div><div class="item"><span class="rk">5</span><span class="nm">工业母机</span><span class="data">连续1天</span><span class="b1 pos">+0.054</span></div><div class="item"><span class="rk">6</span><span class="nm">人形机器人</span><span class="data">连续1天</span><span class="b1 pos">+0.050</span></div><div class="item"><span class="rk">7</span><span class="nm">PEEK材料</span><span class="data">连续1天</span><span class="b1 pos">+0.044</span></div><div class="item"><span class="rk">8</span><span class="nm">一体压铸</span><span class="data">连续1天</span><span class="b1 pos">+0.035</span></div><div class="item"><span class="rk">9</span><span class="nm">工业软件</span><span class="data">连续1天</span><span class="b1 pos">+0.021</span></div><div class="item"><span class="rk">10</span><span class="nm">汽车热管理</span><span class="data">连续1天</span><span class="b1 pos">+0.014</span></div></div></div></div></div>
 
 <div class="full-table"><div class="panel-head">全板块 B1 排名 · 27入/99出</div>
 <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
@@ -66,5 +55,5 @@ td.up{color:#e53935}td.down{color:#0d904f}
 <div class="item"><span class="rk">1</span><span class="nm">半导体</span><span class="b1 neg">-0.618</span></div><div class="item"><span class="rk">2</span><span class="nm">通信设备</span><span class="b1 neg">-0.520</span></div><div class="item"><span class="rk">3</span><span class="nm">电池</span><span class="b1 neg">-0.503</span></div><div class="item"><span class="rk">4</span><span class="nm">消费电子</span><span class="b1 neg">-0.503</span></div><div class="item"><span class="rk">5</span><span class="nm">专用设备</span><span class="b1 neg">-0.491</span></div><div class="item"><span class="rk">6</span><span class="nm">元器件</span><span class="b1 neg">-0.478</span></div><div class="item"><span class="rk">7</span><span class="nm">工业金属</span><span class="b1 neg">-0.473</span></div><div class="item"><span class="rk">8</span><span class="nm">光学光电</span><span class="b1 neg">-0.471</span></div><div class="item"><span class="rk">9</span><span class="nm">玻璃玻纤</span><span class="b1 neg">-0.468</span></div><div class="item"><span class="rk">10</span><span class="nm">其他电子</span><span class="b1 neg">-0.466</span></div>
 </div></div></div>
 
-<div class="footer">数据源:通达信本地日线 · 2026-05-16 09:42 · 仅供参考 不构成投资建议</div>
+<div class="footer">数据源:通达信本地日线 · 2026-05-16 10:05 · 仅供参考 不构成投资建议</div>
 </div></body></html>
