@@ -74,6 +74,10 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 .tp.active{background:#1a5fa8;color:#fff}
 .tp.new.active{background:#880e4f;color:#fff;border-style:solid}
 .r.hl{background:#fff3e0}
+/* Inline sparkline bars */
+.spark{display:inline-flex;align-items:flex-end;gap:1px;height:14px;margin-left:2px;vertical-align:bottom}
+.spark i{width:2px;background:#1a5fa8;border-radius:1px;display:inline-block;min-height:2px;opacity:0.55}
+.spark i:last-child{opacity:1}
 
 /* Pool panels */
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
@@ -137,7 +141,7 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 </div>
 <div class="stsec">
 <div class="stl"><b>警惕龙头切换，找新主线</b> · 中段池(12.5-85%) · B1改善排序 · 行业71候选 · 概念177候选</div>
-<div class="stl theme"><span class="tp" data-sectors="AIGC概念,AI手机PC,AI智能体,AI营销,ChatGPT概念,DeepSeek概念,IT设备,专业工程,专业连锁,云游戏,产业互联网,人工智能,信创,信息安全,光学光电,华为算力,国产软件,多模态AI,大数据,广告营销,广播电视,操作系统,数字媒体,数字孪生,数字水印,数字货币,时空大数据,智慧城市,智谱AI,环保设备,电信服务,电子商务,百度概念,综合类,腾讯概念,财税数字化,远程办公,通信工程,铜缆高速连接,非金属材料,黑色家电">AI/算力<b>40.2%</b></span><span class="tp" data-sectors="PEEK材料,一体压铸,人形机器人,减速器,包装印刷,外骨骼机器人,工业母机,工业软件,工程咨询服务,教育培训,文娱用品,新型工业化,机器视觉,汽车服务,汽车热管理,汽车零部件,电机制造,自动化设备,通用设备,高端装备">机器人/智造<b>20.4%</b></span><span class="tp" data-sectors="一般零售,休闲食品,小家电,新零售,旅游,旅游概念,日用化工,智能家居,渔业,白酒概念,调味品,酒店餐饮,食品加工,食品安全">大消费<b>11.4%</b></span><span class="tp" data-sectors="专业服务,军工信息化,军工电子,卫星导航,国防军工,地面兵装,大飞机,无人机,毫米波雷达,环境监测,航空装备">军工/航天<b>8.9%</b></span><span class="tp" data-sectors="TOPCon电池,固态电池,塑料,氢能源,钙钛矿电池,钠电池,锂电池概念">新能源/电池<b>6.9%</b></span><span class="tp" data-sectors="EDA概念,MCU芯片,MicroLED,MiniLED,光刻机,其他电子,橡胶">半导体/芯片<b>6.5%</b></span><span class="tp" data-sectors="AI医疗概念,动物保健,医疗器械,医疗美容,医药商业,智能医疗,生物质能">医药/医疗<b>5.7%</b></span><span class="tp new" data-sectors="跨境电商,中俄贸易,口罩防护">跨境电<b>3</b></span></div>
+<div class="stl theme"><span class="tp" data-sectors="AIGC概念,AI手机PC,AI智能体,AI营销,ChatGPT概念,DeepSeek概念,IT设备,专业工程,专业连锁,云游戏,产业互联网,人工智能,信创,信息安全,光学光电,华为算力,国产软件,多模态AI,大数据,广告营销,广播电视,操作系统,数字媒体,数字孪生,数字水印,数字货币,时空大数据,智慧城市,智谱AI,环保设备,电信服务,电子商务,百度概念,综合类,腾讯概念,财税数字化,远程办公,通信工程,铜缆高速连接,非金属材料,黑色家电">AI/算力<b>40.2%</b><span class="spark"><i style="height:13px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:11px"></i><i style="height:14px"></i></span></span><span class="tp" data-sectors="PEEK材料,一体压铸,人形机器人,减速器,包装印刷,外骨骼机器人,工业母机,工业软件,工程咨询服务,教育培训,文娱用品,新型工业化,机器视觉,汽车服务,汽车热管理,汽车零部件,电机制造,自动化设备,通用设备,高端装备">机器人/智造<b>20.4%</b><span class="spark"><i style="height:12px"></i><i style="height:2px"></i><i style="height:13px"></i><i style="height:8px"></i><i style="height:14px"></i></span></span><span class="tp" data-sectors="一般零售,休闲食品,小家电,新零售,旅游,旅游概念,日用化工,智能家居,渔业,白酒概念,调味品,酒店餐饮,食品加工,食品安全">大消费<b>11.4%</b><span class="spark"><i style="height:10px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:4px"></i><i style="height:14px"></i></span></span><span class="tp" data-sectors="专业服务,军工信息化,军工电子,卫星导航,国防军工,地面兵装,大飞机,无人机,毫米波雷达,环境监测,航空装备">军工/航天<b>8.9%</b><span class="spark"><i style="height:14px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:12px"></i><i style="height:12px"></i></span></span><span class="tp" data-sectors="TOPCon电池,固态电池,塑料,氢能源,钙钛矿电池,钠电池,锂电池概念">新能源/电池<b>6.9%</b><span class="spark"><i style="height:14px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:12px"></i></span></span><span class="tp" data-sectors="EDA概念,MCU芯片,MicroLED,MiniLED,光刻机,其他电子,橡胶">半导体/芯片<b>6.5%</b><span class="spark"><i style="height:14px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:11px"></i><i style="height:13px"></i></span></span><span class="tp" data-sectors="AI医疗概念,动物保健,医疗器械,医疗美容,医药商业,智能医疗,生物质能">医药/医疗<b>5.7%</b><span class="spark"><i style="height:6px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:14px"></i></span></span><span class="tp new" data-sectors="跨境电商,中俄贸易,口罩防护">跨境电<b>3</b></span></div>
 <div id="themeTopBar" class="theme-top"><span class="tbc"></span></div>
 <div class="note good"><div class="nt">市场健康 —— 各周期均可持仓</div><div class="nd">广度75%：超半数板块获资金流入，市场活跃。回测：3日+0.2%、5日+0.4%、20日+1.1%胜率58%。各周期均健康，跟随策略池方向适度持仓，趋势不破不离。</div></div>
 </div>
@@ -204,7 +208,7 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 <div class="sr"><span class="n">工程机械</span><span class="sd dn">-0.070</span><span class="sv dn">-0.415</span></div>
 </div></div></div>
 
-<div class="ft">2026-05-20 15:14 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
+<div class="ft">2026-05-20 15:39 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
 <script>
 function toggleStocks(row){
  var sub=row.nextElementSibling;
@@ -214,7 +218,7 @@ function toggleStocks(row){
 }
 // Theme pill click: highlight matching rows + show TOP5 stock bar
 (function(){
- var themeTopStocks={"机器人/智造": [["埃科光电", 20.0], ["江海股份", 10.0], ["南威软件", 10.0], ["立昂微", 10.0], ["纽威数控", 8.9]], "半导体/芯片": [["有研硅", 8.2], ["华工科技", 7.5], ["华天科技", 4.2]], "新能源/电池": [["利扬芯片", 11.5], ["上纬新材", 10.0], ["东材科技", 5.1]], "军工/航天": [["*ST动力", 20.3], ["立昂微", 10.0], ["联芸科技", 8.9]], "医药/医疗": [["鼎熔岩", 17.2], ["光大同创", 11.3], ["申达股份", 9.9]], "AI/算力": [["德马科技", 20.0], ["新特电气", 20.0], ["天山电子", 20.0], ["彩讯股份", 20.0], ["沪硅产业", 20.0]]};
+ var themeTopStocks={"机器人/智造": [["埃科光电", 20.0], ["南威软件", 10.0], ["立昂微", 10.0], ["江海股份", 10.0], ["纽威数控", 8.9]], "半导体/芯片": [["有研硅", 8.2], ["华工科技", 7.5], ["华天科技", 4.2]], "新能源/电池": [["利扬芯片", 11.5], ["上纬新材", 10.0], ["东材科技", 5.1]], "军工/航天": [["*ST动力", 20.3], ["立昂微", 10.0], ["联芸科技", 8.9]], "医药/医疗": [["鼎熔岩", 17.2], ["光大同创", 11.3], ["申达股份", 9.9]], "AI/算力": [["弘信电子", 20.0], ["沪硅产业", 20.0], ["新特电气", 20.0], ["彩讯股份", 20.0], ["德马科技", 20.0]]};
  var currentTheme=null;
  var pills=document.querySelectorAll('.tp[data-sectors]');
  var topBar=document.getElementById('themeTopBar');
