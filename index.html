@@ -78,6 +78,7 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 .spark{display:flex;align-items:flex-end;gap:1px;height:18px;flex-shrink:0}
 .spark i{width:2px;background:#1a5fa8;border-radius:1px;display:inline-block;min-height:2px;opacity:0.45}
 .spark i:last-child{opacity:1;width:2.5px}
+.tind{font-size:9px;font-weight:600;margin-left:2px;white-space:nowrap}
 
 /* Pool panels */
 .cols{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
@@ -135,13 +136,13 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 <div class="mc"><span class="lbl">0AMV</span><span class="val up">活跃</span></div>
 <div class="mc"><span class="lbl">DIF</span><span class="val"><span class="dn">↓</span><span class="up">28</span></span></div>
 <div class="mc"><span class="lbl">大盘</span><span class="val dn">-2.0%</span></div>
-<div class="mc"><span class="lbl">广度</span><span class="val dn">10%</span></div>
-<div class="mc"><span class="lbl">更替</span><span class="val dn">88%</span></div>
+<div class="mc"><span class="lbl">广度</span><span class="val warn">10%</span></div>
+<div class="mc"><span class="lbl">更替</span><span class="val warn">88%</span></div>
 </div>
 </div>
 <div class="stsec">
-<div class="stl"><b>警惕龙头切换，找新主线</b> · 中段池(12.5-85%) · B1改善排序 · 行业8候选 · 概念0候选</div>
-<div class="stl theme"><span class="tp" data-sectors="汽车零部件,电机制造">机器人/智造<b>68.6%</b><span class="spark"><i style="height:16px"></i><i style="height:11px"></i><i style="height:2px"></i><i style="height:13px"></i><i style="height:2px"></i><i style="height:14px"></i><i style="height:8px"></i><i style="height:14px"></i><i style="height:2px"></i><i style="height:2px"></i></span></span><span class="tp" data-sectors="乘用车,酒店餐饮">大消费<b>31.4%</b><span class="spark"><i style="height:16px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:4px"></i><i style="height:14px"></i><i style="height:2px"></i><i style="height:2px"></i></span></span></div>
+<div class="stl"><b>警惕龙头切换，找新主线</b> · 中段池(12.5-85%) · B1改善排序 · 行业8候选 · 概念30候选</div>
+<div class="stl theme"><span class="tp" data-sectors="汽车零部件,电机制造">机器人/智造<b>36.4%</b><span class="spark"><i style="height:9px"></i><i style="height:7px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:4px"></i><i style="height:8px"></i><i style="height:2px"></i><i style="height:2px"></i></span></span><span class="tp" data-sectors="全国性银行,地方性银行">金融<b>25.9%</b><span class="spark"><i style="height:5px"></i><i style="height:11px"></i><i style="height:2px"></i><i style="height:5px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:11px"></i><i style="height:2px"></i><i style="height:4px"></i></span></span><span class="tp" data-sectors="航空机场,航运港口">交通物流<b>21.0%</b><span class="spark"><i style="height:12px"></i><i style="height:5px"></i><i style="height:2px"></i><i style="height:8px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:2px"></i></span></span><span class="tp" data-sectors="乘用车,免税概念,酒店餐饮,预制菜">大消费<b>16.6%</b><span class="spark"><i style="height:11px"></i><i style="height:7px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:3px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:2px"></i></span></span></div>
 <div id="themeTopBar" class="theme-top"><span class="tbc"></span></div>
 <div class="note danger"><div class="nt">赚钱效应弱 —— 短线回避，中线等企稳</div><div class="nd">广度仅10%且更替88%：资金高度集中+快速轮动。回测：3日+0.0%、5日+0.1%、20日+0.6%。短线(3-5日)赚钱效应极弱，轻仓或观望；中线(20日)可恢复，等广度回升再入场。</div></div>
 </div>
@@ -163,7 +164,16 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 <div class="pn">
 <div class="ph"><span class="dot"></span>策略池 · 概念<span class="lbl">中段池 B1↓</span></div>
 <div class="ch"><span class="cn">板块</span><span class="ca">成交</span><span class="cd">Δ改善</span><span class="cb">B1</span><span class="cy">持续</span></div>
-<div class="r"><span class="nm mute">候选不足，等待信号</span></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">水产品</span><span class="am">11亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.106</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">海昌新材</span><span class="ssr up">+6.7%</span></div><div class="ssub"><span class="ssn">恒而达</span><span class="ssr up">+1.7%</span></div><div class="ssub"><span class="ssn">长盈精密</span><span class="ssr up">+1.6%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">种业</span><span class="am">14亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.118</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">建设机械</span><span class="ssr up">+1.7%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">鸡肉</span><span class="am">30亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.119</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">双良节能</span><span class="ssr up">+6.6%</span></div><div class="ssub"><span class="ssn">友阿股份</span><span class="ssr up">+2.0%</span></div><div class="ssub"><span class="ssn">皇台酒业</span><span class="ssr up">+0.5%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">风沙治理</span><span class="am">28亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.165</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">模塑科技</span><span class="ssr up">+7.4%</span></div><div class="ssub"><span class="ssn">精锻科技</span><span class="ssr up">+7.1%</span></div><div class="ssub"><span class="ssn">共达电声</span><span class="ssr up">+4.1%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">草甘膦</span><span class="am">38亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.178</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">天士力</span><span class="ssr up">+1.0%</span></div><div class="ssub"><span class="ssn">华厦眼科</span><span class="ssr up">+0.9%</span></div><div class="ssub"><span class="ssn">成都银行</span><span class="ssr up">+0.4%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">猪肉</span><span class="am">68亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.186</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">友阿股份</span><span class="ssr up">+2.0%</span></div><div class="ssub"><span class="ssn">皇台酒业</span><span class="ssr up">+0.5%</span></div><div class="ssub"><span class="ssn">晨光新材</span><span class="ssr up">+0.3%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">DRG-DIP</span><span class="am">39亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.198</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">汉威科技</span><span class="ssr up">+3.5%</span></div><div class="ssub"><span class="ssn">新时达</span><span class="ssr up">+1.7%</span></div><div class="ssub"><span class="ssn">明阳智能</span><span class="ssr up">+1.5%</span></div></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">知识付费</span><span class="am">58亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.200</span><span class="dy mute">-</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">景兴纸业</span><span class="ssr up">+2.9%</span></div><div class="ssub"><span class="ssn">风语筑</span><span class="ssr up">+1.9%</span></div><div class="ssub"><span class="ssn">微光股份</span><span class="ssr up">+0.9%</span></div></div>
+<div class="r"><span class="nm">虫害防治</span><span class="am">53亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.214</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">供销社</span><span class="am">60亿</span><span class="bl dn">+0.000</span><span class="dl dn">-0.224</span><span class="dy mute">-</span></div>
 </div>
 </div>
 
@@ -197,7 +207,7 @@ body{background:#f0f2f5;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFo
 <div class="sr"><span class="n">IT设备</span><span class="sd dn">-0.013</span><span class="sv dn">-0.443</span></div>
 </div></div></div>
 
-<div class="ft">2026-05-22 12:34 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
+<div class="ft">2026-05-22 15:09 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
 <script>
 function toggleStocks(row){
  var sub=row.nextElementSibling;
@@ -207,7 +217,7 @@ function toggleStocks(row){
 }
 // Theme pill click: highlight matching rows + show TOP5 stock bar
 (function(){
- var themeTopStocks={"机器人/智造": [["龙腾光电", 20.0], ["豪恩汽电", 10.6], ["埃斯顿", 10.0], ["步科股份", 7.6]], "大消费": [["赛力斯", 6.1], ["游族网络", 4.3]]};
+ var themeTopStocks={"机器人/智造": [["龙腾光电", 20.0], ["豪恩汽电", 10.6], ["埃斯顿", 10.0], ["步科股份", 7.6]], "交通物流": [["冠中生态", 10.1], ["伯特利", 8.1], ["招商南油", 7.5]], "大消费": [["赛力斯", 6.1], ["游族网络", 4.3], ["凯撒旅业", 3.7], ["湖南投资", 2.6], ["浙江正特", 0.6]]};
  var currentTheme=null;
  var pills=document.querySelectorAll('.tp[data-sectors]');
  var topBar=document.getElementById('themeTopBar');
