@@ -64,15 +64,14 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .c5 .spark i{background:#c02660}.c5 .tp{color:#c02660}
 .c6 .spark i{background:#4b5563}.c6 .tp{color:#4b5563}
 .c7 .spark i{background:#0891b2}.c7 .tp{color:#0891b2}
-/* Theme TOP5 bar */
 .theme-top{display:none;align-items:center;gap:10px;padding:8px 16px;background:var(--card);border:1px solid var(--border);border-radius:8px;margin-bottom:16px;font-size:10px}
 .theme-top .tbc{display:flex;align-items:center;gap:14px;flex-wrap:wrap;flex:1}
 .theme-top .tbclose{color:var(--ink-dim);cursor:pointer;font-size:15px;line-height:1}
 .theme-top .tbs{display:inline-flex;align-items:center;gap:4px}
 .theme-top .tbn{color:var(--ink-mid);max-width:70px;overflow:hidden;text-overflow:ellipsis}
 .theme-top .tbr{font-weight:600;font-size:10px}
-.tcard.active{box-shadow:0 0 0 2px var(--blue)}.pool .row.hl{background:#eef2ff}
-
+.tcard.active{box-shadow:0 0 0 2px var(--blue)}
+.pool .row.hl{background:#eef2ff}
 .pools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
 .pool{background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .pool .ph{font-size:12px;font-weight:650;padding:16px 20px 10px;display:flex;align-items:center}
@@ -102,6 +101,8 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 
 .ft{text-align:center;padding:28px 0 0;font-size:9px;color:var(--ink-dim);letter-spacing:1px}
 .ft span{color:var(--ink-mid);font-weight:550}
+@media(max-width:768px){.themes{grid-template-columns:repeat(2,1fr)}.pools{grid-template-columns:1fr}.snap .cols{grid-template-columns:1fr}.snap .col+.col{border-left:none;border-top:1px solid #dfe2e8}.metrics{flex-wrap:wrap}.metrics .mc{flex:1 1 30%;min-width:90px}}
+@media(max-width:480px){.themes{grid-template-columns:1fr}}
 </style>
 </head>
 <body><div class="g">
@@ -115,7 +116,7 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 <div class="ft">© 2026 <span>Zhubin</span> · 数据来源通达信 · 仅限个人研究</div>
 </div>
 <script>
-var D={"date": "2026-05-25 周一", "state": "高位整理 · 积极", "amv": "活跃", "dif_arrow": "↓", "dif_val": "22", "mkt": "+1.0%", "breadth": "49%", "turnover": "36%", "note": {"state": "great", "title": "温和正常 —— 短期最优，按策略操作", "desc": "广度和更替均在合理区间。回测：3日+0.3%、5日+0.6%、10日+0.8%。历史表现最优状态，按策略正常操作，持有待涨。"}, "themes": [{"name": "电力电网", "pct": 38.3, "bars": [3, 10, 2, 2, 6, 9, 2, 2, 8, 5], "sectors": "其他发电设备,电力,超临界发电"}, {"name": "半导体/芯片", "pct": 32.4, "bars": [2, 6, 2, 2, 5, 6, 6, 2, 7, 7], "sectors": "EDA概念,MCU芯片,MicroLED,光刻机,汽车芯片"}, {"name": "消费电子", "pct": 5.0, "bars": [2, 8, 2, 2, 7, 6, 2, 2, 9, 7], "sectors": "无线耳机"}, {"name": "医药/医疗", "pct": 4.2, "bars": [2, 7, 2, 2, 2, 20, 2, 2, 8, 2], "sectors": "证券"}, {"name": "交通物流", "pct": 3.8, "bars": [2, 8, 2, 2, 2, 11, 2, 2, 7, 5], "sectors": "航空机场"}, {"name": "机器人/智造", "pct": 3.7, "bars": [2, 7, 2, 7, 4, 8, 2, 2, 9, 3], "sectors": "自动化设备"}, {"name": "金融", "pct": 2.9, "bars": [2, 6, 3, 2, 2, 11, 2, 4, 4, 7], "sectors": "保险"}, {"name": "大消费", "pct": 2.6, "bars": [2, 8, 2, 2, 3, 11, 2, 2, 8, 4], "sectors": "酿酒"}], "themeTopStocks": {"机器人/智造": [["盛合晶微", 13.8], ["富信科技", 13.6], ["致尚科技", 13.0]], "半导体/芯片": [["东芯股份", 20.0], ["商络电子", 20.0], ["新雷能", 17.0], ["云汉芯城", 16.7], ["华大九天", 15.0]], "医药/医疗": [["同花顺", 3.4]], "AI/算力": [["光弘科技", 18.0], ["东方明珠", 10.0]], "消费电子": [["盛合晶微", 13.8], ["致尚科技", 13.0], ["汇成股份", 10.8]], "大消费": [["金种子酒", 4.9], ["迎驾贡酒", 4.2], ["济川药业", 3.0]], "电力电网": [["商络电子", 20.0], ["汇成股份", 10.8], ["广西能源", 10.0], ["电投绿能", 9.9], ["长源电力", 9.9]], "地产基建": [["北辰实业", 7.7]], "材料/资源": [["隆扬电子", 9.1], ["菲利华", 8.1], ["环旭电子", 7.0]]}, "pool_ind": [["电力", 0.703, 0, 0, 0.112, "", 721.0, 0], ["航空机场", 0.678, 0, 0, 0.845, "", 74.0, 0], ["证券", 0.623, 0, 0, 0.938, "", 283.0, 0], ["保险", 0.592, 0, 0, 0.768, "", 83.0, 0], ["广播电视", 0.553, 0, 0, 0.811, "", 41.0, 0], ["自动化设备", 0.539, 0, 0, -0.108, "", 813.0, 0], ["其他发电设备", 0.538, 0, 0, -0.076, "", 231.0, 0], ["非金属材料", 0.527, 0, 0, -0.093, "", 100.0, 0], ["酿酒", 0.513, 0, 0, 0.807, "", 182.0, 0], ["房地产开发", 0.496, 0, 0, -0.034, "", 239.0, 0], ["汽车芯片", 0.773, 0, 0, 0.046, "", 2627.0, 0], ["玻璃基板", 0.769, 0, 0, 0.091, "", 452.0, 0]], "pool_con": [["汽车芯片", 0.773, 0, 0, 0.046, "", 2627.0, 0], ["玻璃基板", 0.769, 0, 0, 0.091, "", 452.0, 0], ["EDA概念", 0.764, 0, 0, 0.145, "", 272.0, 0], ["MCU芯片", 0.735, 0, 0, 0.039, "", 1444.0, 0], ["华为海思", 0.653, 0, 0, -0.05, "", 1221.0, 0], ["MicroLED", 0.63, 0, 0, -0.096, "", 1323.0, 0], ["无线耳机", 0.597, 0, 0, -0.104, "", 1622.0, 0], ["超临界发电", 0.577, 0, 0, 0.045, "", 568.0, 0], ["通达信88", 0.57, 0, 0, 0.026, "", 3617.0, 0], ["光刻机", 0.566, 0, 0, -0.156, "", 1466.0, 0]], "snap_in": [["半导体", 0.267, 0.94], ["玻璃玻纤", 0.275, 0.777], ["通信设备", 0.072, 0.708], ["电力", 0.157, 0.703], ["航空机场", 0.904, 0.678], ["证券", 0.972, 0.623], ["消费电子", -0.036, 0.622], ["金属新材料", 0.88, 0.621], ["保险", 0.811, 0.592], ["光学光电", 0.07, 0.59]], "snap_out": [["电池", -0.074, -0.434], ["化学制品", 0.038, -0.434], ["化学原料", -0.075, -0.433], ["航运港口", -0.058, -0.427], ["汽车零部件", -0.081, -0.406], ["光伏设备", -0.105, -0.402], ["能源金属", -0.093, -0.378], ["家电零部件", -0.786, -0.368], ["生物制品", -0.014, -0.368], ["广告营销", -0.877, -0.361]]};
+var D={"date": "2026-05-22 周五", "state": "高位整理 · 震荡", "amv": "活跃", "dif_arrow": "↓", "dif_val": "23", "mkt": "+0.9%", "breadth": "70%", "turnover": "94%", "note": {"state": "warn", "title": "轮动过快 —— 短线操作，中线稳健", "desc": "更替率94%：板块每日大换血，主线不持续。回测：3日+0.1%、5日+0.1%、20日+0.8%。短线微利，快进快出不恋战；中线累计收益尚可，但需承受轮动波动。"}, "themes": [{"name": "消费电子", "pct": 27.4, "bars": [9, 2, 10, 2, 2, 8, 8, 3, 2, 11]}, {"name": "半导体/芯片", "pct": 27.2, "bars": [9, 2, 8, 2, 2, 6, 8, 7, 2, 9]}, {"name": "AI/算力", "pct": 12.5, "bars": [8, 2, 10, 2, 2, 9, 11, 2, 2, 9]}, {"name": "新能源/电池", "pct": 11.8, "bars": [10, 2, 11, 2, 2, 5, 9, 4, 2, 12]}, {"name": "汽车/智驾", "pct": 10.7, "bars": [7, 2, 10, 2, 5, 5, 10, 2, 2, 11]}, {"name": "材料/资源", "pct": 8.0, "bars": [10, 2, 10, 2, 2, 2, 4, 5, 2, 15]}, {"name": "军工/航天", "pct": 2.5, "bars": [10, 2, 11, 2, 2, 10, 9, 2, 2, 11]}], "pool_ind": [["玻璃玻纤", 0.81, 0, 0, 0.412, "", 363.0, 0], ["其他电子", 0.722, 0, 0, 0.126, "", 383.0, 0], ["化学制品", 0.716, 0, 0, 1.063, "", 537.0, 0], ["专用设备", 0.695, 0, 0, 0.123, "", 794.0, 0], ["金属新材料", 0.677, 0, 0, 1.006, "", 136.0, 0], ["塑料", 0.675, 0, 0, 0.115, "", 335.0, 0], ["光伏设备", 0.669, 0, 0, 0.031, "", 650.0, 0], ["电池", 0.654, 0, 0, 0.988, "", 897.0, 0], ["军工电子", 0.649, 0, 0, 0.059, "", 336.0, 0], ["贵金属", 0.622, 0, 0, 0.921, "", 92.0, 0], ["PCB概念", 0.901, 0, 0, 0.259, "", 3324.0, 0], ["CPO概念", 0.893, 0, 0, 0.229, "", 5428.0, 0]], "pool_con": [["PCB概念", 0.901, 0, 0, 0.259, "", 3324.0, 0], ["CPO概念", 0.893, 0, 0, 0.229, "", 5428.0, 0], ["光通信", 0.816, 0, 0, 0.203, "", 3740.0, 0], ["苹果概念", 0.809, 0, 0, 0.221, "", 2842.0, 0], ["消费电子概念", 0.808, 0, 0, 0.118, "", 5717.0, 0], ["存储芯片", 0.788, 0, 0, 0.088, "", 4894.0, 0], ["英伟达概念", 0.788, 0, 0, 0.167, "", 2177.0, 0], ["第三代半导体", 0.787, 0, 0, 0.104, "", 2932.0, 0], ["汽车电子", 0.778, 0, 0, 0.102, "", 5610.0, 0], ["新能源车", 0.775, 0, 0, 0.096, "", 8125.0, 0]], "snap_in": [["元器件", 1.414, 0.936], ["玻璃玻纤", 1.278, 0.81], ["半导体", 1.416, 0.798], ["通信设备", 1.317, 0.797], ["工业金属", 1.231, 0.758], ["消费电子", 1.259, 0.756], ["光学光电", 1.215, 0.744], ["稀有金属", 1.195, 0.73], ["其他电子", 1.187, 0.722], ["化学制品", 0.379, 0.716]], "snap_out": [["医疗服务", -0.107, -0.473], ["化学制药", -0.095, -0.46], ["基础建设", -0.087, -0.453], ["广告营销", -1.063, -0.445], ["游戏", -0.9, -0.444], ["电信服务", -0.888, -0.435], ["石油化工", -0.117, -0.428], ["饮料乳品", -0.167, -0.42], ["生物制品", -0.08, -0.415], ["中药", -0.121, -0.402]]};
 var c=function(v){return v>0?'up':(v<0?'dn':'mute');};
 var f=function(v,d){d=d||2;return v>=0?'+'+v.toFixed(d):v.toFixed(d);};
 document.getElementById('state-tag').textContent=D.state||'';
@@ -138,7 +139,7 @@ document.getElementById('themes').innerHTML=(D.themes||[]).slice(0,8).map(functi
    return '<i style="height:'+ht+'px;'+(j===t.bars.length-1?'"':'opacity:0.22"')+'></i>';
   }).join('');
  }
- return '<div class="tcard c'+i+'" data-sectors="'+t.sectors+'" onclick="themeClick(this)"><div class="tr"><div class="tn">'+t.name+'</div><div class="tp">'+t.pct.toFixed(1)+'<span class="pct-sign">%</span></div></div><div class="spark">'+bars+'</div></div>';
+ var secs=t.sectors||'';return '<div class=\"tcard c'+i+'\" data-sectors=\"'+secs+'\" onclick=\"themeClick(this)\"><div class=\"tr\"><div class=\"tn\">'+t.name+'</div><div class=\"tp\">'+t.pct.toFixed(1)+'<span class=\"pct-sign\">%</span></div></div><div class=\"spark\">'+bars+'</div></div>';
 }).join('');
 function poolTbl(title,items,showAmt){
  var h='<div class="pool"><div class="ph"><span class="dot"></span>'+title+'<span class="sub">B1 &#8595;</span></div><table>';
@@ -155,22 +156,22 @@ document.getElementById('snapshot').innerHTML+=
  '<div class="col"><h4>流入 TOP 10</h4><table>'+si.slice(0,10).map(function(s){return '<tr><td class="nm">'+s[0]+'</td><td class="v '+c(s[1])+'">'+f(s[1],3)+'</td><td class="vb '+c(s[2])+'">'+f(s[2])+'</td></tr>';}).join('')+'</table></div>'+
  '<div class="col"><h4>流出 TOP 10</h4><table>'+so.slice(0,10).map(function(s){return '<tr><td class="nm">'+s[0]+'</td><td class="v '+c(s[1])+'">'+f(s[1],3)+'</td><td class="vb '+c(s[2])+'">'+f(s[2])+'</td></tr>';}).join('')+'</table></div>';
 
-// Theme click handler
-var currentTheme=null;
+var curTheme=null;
 function themeClick(el){
- var theme=el.querySelector('.tn').textContent;
- if(currentTheme===theme){currentTheme=null;el.classList.remove('active');document.getElementById('themeTopBar').style.display='none';document.querySelectorAll('.pool .row').forEach(function(r){r.classList.remove('hl')});return;}
- if(currentTheme){document.querySelectorAll('.tcard.active').forEach(function(t){t.classList.remove('active')});}
- currentTheme=theme;el.classList.add('active');
+ var tn=el.querySelector('.tn').textContent;
+ if(curTheme===tn){curTheme=null;el.classList.remove('active');document.getElementById('themeTopBar').style.display='none';document.querySelectorAll('.pool .row').forEach(function(r){r.classList.remove('hl')});return;}
+ if(curTheme){document.querySelectorAll('.tcard.active').forEach(function(t){t.classList.remove('active')});}
+ curTheme=tn;el.classList.add('active');
  var secs=el.dataset.sectors.split(',');
- document.querySelectorAll('.pool .row').forEach(function(r){var nm=r.querySelector('td');if(nm&&secs.indexOf(nm.textContent.trim())>=0)r.classList.add('hl');else r.classList.remove('hl');});
- var stocks=(D.themeTopStocks||{})[theme];
+ document.querySelectorAll('.pool .row').forEach(function(r){var td=r.querySelector('td');if(td&&secs.indexOf(td.textContent.trim())>=0)r.classList.add('hl');else r.classList.remove('hl');});
+ var stocks=(D.themeTopStocks||{})[tn];
  var bar=document.getElementById('themeTopBar');
  if(stocks&&stocks.length){
-  var h='<span class="tbclose" onclick="document.getElementById('themeTopBar').style.display='none';currentTheme=null">&times;</span>';
+  var h='<span class="tbclose" onclick="document.getElementById('themeTopBar').style.display='none';curTheme=null">&times;</span>';
   stocks.forEach(function(s){var cl=s[1]>0?'up':'dn';h+='<span class="tbs"><span class="tbn">'+s[0]+'</span><span class="tbr '+cl+'">'+(s[1]>0?'+':'')+s[1].toFixed(1)+'%</span></span>';});
   bar.querySelector('.tbc').innerHTML=h;bar.style.display='flex';
  }else{bar.style.display='none';}
 }
 </script>
+
 </body></html>
