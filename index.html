@@ -94,27 +94,9 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 
 .ft{text-align:center;padding:28px 0 0;font-size:9px;color:var(--ink-dim);letter-spacing:1px}
 .ft span{color:var(--ink-mid);font-weight:550}
-@media(max-width:768px){
- body{padding:16px 10px 40px}
- .hd{padding:0 0 16px;margin-bottom:20px}
- .hd h1{font-size:18px}
- .hd .date{float:none;display:block;margin-top:4px}
- .metrics{flex-wrap:wrap;gap:6px;border-radius:6px}
- .metrics .mc{flex:1 1 calc(33% - 4px);min-width:80px;padding:12px 10px}
- .metrics .mc .val{font-size:22px}
- .themes{grid-template-columns:repeat(2,1fr);gap:8px}
- .tcard{padding:14px}
- .tcard .tp{font-size:24px}
- .pools{grid-template-columns:1fr;gap:12px}
- .snap .cols{grid-template-columns:1fr}
- .snap .col+.col{border-left:none;border-top:1px solid var(--border)}
- .pool td{padding:5px 14px;font-size:11px}
- .pool th{padding:4px 14px 6px}
-}
-@media(max-width:480px){
- .themes{grid-template-columns:1fr}
- .metrics .mc{flex:1 1 calc(50% - 3px)}
-}
+@media(max-width:768px){.themes{grid-template-columns:repeat(2,1fr)}.pools{grid-template-columns:1fr}.snap .cols{grid-template-columns:1fr}.snap .col+.col{border-left:none;border-top:1px solid #dfe2e8}.metrics{flex-wrap:wrap}.metrics .mc{flex:1 1 30%;min-width:90px}}
+@media(max-width:480px){.themes{grid-template-columns:1fr}}
+</style>
 </head>
 <body><div class="g">
 <div class="hd"><h1>主力资金监控</h1><span class="state" id="state-tag"></span><span class="date" id="hd-date"></span></div>
