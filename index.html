@@ -146,7 +146,7 @@ function poolTbl(title,items,showAmt){
  h+='<tr><th>板块</th><th class="r">成交</th><th class="r">Δ改善</th><th class="r">B1</th></tr>';
  if(!items||!items.length) return h+'<tr><td class="nm" style="color:var(--ink-dim)">候选不足</td></tr></table></div>';
  items.forEach(function(m){
-  h+='<tr><td class="nm">'+m[0]+'</td><td class="amt r">'+(showAmt&&m[6]>0?m[6].toFixed(0)+'亿':'')+'</td><td class="delta r '+c(m[4])+'">'+f(m[4],3)+'</td><td class="b1 r '+c(m[1])+'">'+f(m[1])+'</td></tr>';
+  h+='<tr class="row"><td class="nm">'+m[0]+'</td><td class="amt r">'+(showAmt&&m[6]>0?m[6].toFixed(0)+'亿':'')+'</td><td class="delta r '+c(m[4])+'">'+f(m[4],3)+'</td><td class="b1 r '+c(m[1])+'">'+f(m[1])+'</td></tr>';
  });
  return h+'</table></div>';
 }
@@ -167,7 +167,7 @@ function themeClick(el){
  var stocks=(D.themeTopStocks||{})[tn];
  var bar=document.getElementById('themeTopBar');
  if(stocks&&stocks.length){
-  var h='<span class="tbclose" onclick="document.getElementById('themeTopBar').style.display='none';curTheme=null">&times;</span>';
+  var h='<span class="tbclose" onclick="document.getElementById(\x27themeTopBar\x27).style.display=\x27none\x27;curTheme=null">&times;</span>';
   stocks.forEach(function(s){var cl=s[1]>0?'up':'dn';h+='<span class="tbs"><span class="tbn">'+s[0]+'</span><span class="tbr '+cl+'">'+(s[1]>0?'+':'')+s[1].toFixed(1)+'%</span></span>';});
   bar.querySelector('.tbc').innerHTML=h;bar.style.display='flex';
  }else{bar.style.display='none';}
