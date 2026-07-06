@@ -1,0 +1,261 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>主力资金监控</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f4f5f7;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:24px 16px 48px;-webkit-font-smoothing:antialiased}
+.g{max-width:920px;margin:0 auto}
+
+/* Header card */
+.hd{background:#fff;border-radius:16px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.04);overflow:hidden}
+/* Title row */
+.tl{padding:22px 28px 10px;display:flex;align-items:center}
+.tl h1{font-size:20px;font-weight:700;letter-spacing:2px;color:#111827;margin:0}
+.tl .state{font-size:11px;font-weight:500;color:#e53935;margin-left:14px}
+.tl .state::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#e53935;margin-right:5px;vertical-align:middle;position:relative;top:-1px}
+/* Strategy subtitle */
+.dsb{padding:4px 28px 18px;font-size:11px;color:#9ca3af;border-bottom:1px solid #f3f4f6;display:flex;align-items:baseline}
+.dsb .dt{margin-left:auto;font-size:11px;color:#9ca3af;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Metric cards row */
+.mrow{padding:14px 28px;border-bottom:1px solid #f3f4f6}
+/* Metric cards */
+.mcards{display:flex;gap:8px;flex-wrap:wrap}
+.mc{background:#f8fafb;border-radius:8px;padding:10px 14px;text-align:center;min-width:64px;flex:1}
+.mc .lbl{font-size:10px;color:#9ca3af;display:block;margin-bottom:3px;letter-spacing:0.3px}
+.mc .val{font-size:16px;font-weight:650}
+.mc .val.up{color:#dc2626}.mc .val.dn{color:#059669}.mc .val.warn{color:#d97706}.mc .val.mute{color:#9ca3af}
+
+/* Strategy + note area */
+.stsec{padding:14px 28px}
+.stsec .stl{font-size:11px;color:#5f6368;line-height:1.6}
+.stsec .stl b{color:#1a1d23}
+
+/* Strategy line */
+.stsec .stl{margin-bottom:6px}
+
+/* Market note */
+.note{border-radius:10px;padding:12px 16px;line-height:1.5}
+.note .nt{font-size:12px;font-weight:600;margin-bottom:2px}
+.note .nd{font-size:10px;color:#6b7280;line-height:1.6}
+.note.danger{background:#fef2f2;border:1px solid #fecaca}
+.note.danger .nt{color:#991b1b}
+.note.warn{background:#fffbeb;border:1px solid #fde68a}
+.note.warn .nt{color:#92400e}
+.note.good,.note.great{background:#eff6ff;border:1px solid #bfdbfe}
+.note.good .nt,.note.great .nt{color:#1e40af}
+.note.info{background:#f3f4f6;border:1px solid #e5e7eb}
+.note.info .nt{color:#6b7280}
+
+/* Theme pills */
+.stl.theme{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+/* Theme TOP5 stock bar */
+.theme-top{display:none;align-items:center;gap:10px;padding:6px 12px;background:#f8f9fa;border-radius:6px;margin-top:6px;font-size:10px;flex-wrap:wrap}
+.theme-top .tbc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1}
+.theme-top .tbclose{color:#9aa0a6;cursor:pointer;font-size:14px;line-height:1}
+.theme-top .tbs{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.theme-top .tbn{color:#5f6368;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+.theme-top .tbr{font-weight:600;font-size:10px}
+.tp{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;padding:10px 12px;border-radius:6px;background:#e8f0fe;color:#1a5fa8;font-weight:500;min-width:0;cursor:pointer;user-select:none;transition:all 0.2s}
+.tp:hover{filter:brightness(0.92)}
+.tp.active{background:#1a5fa8;color:#fff}
+.tp .tpl{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.tp .tpn{font-size:11px;line-height:1.2}
+.tp .tpp{font-size:15px;font-weight:700;line-height:1.1;color:#1a5fa8}
+.tp.active .tpp{color:#fff}
+.tp.new{background:#fce4ec;color:#880e4f;border:1px dashed #e91e63}
+.tp.new .tpp{color:#880e4f}
+.tp.new.active{background:#880e4f;color:#fff;border-style:solid}
+.tp.new.active .tpp{color:#fff}
+.r.hl{background:#fff3e0}
+/* Inline sparkline bars */
+.spark{display:flex;align-items:flex-end;gap:2px;height:28px;flex:1;justify-content:flex-end;overflow:hidden}
+.spark i{flex:1;max-width:7px;min-width:1px;background:#1a5fa8;border-radius:1px;display:inline-block;min-height:2px;opacity:0.3}
+.spark i:last-child{opacity:1}
+.tp.active .spark i{background:#fff}
+.tp.new .spark i{background:#880e4f}
+
+/* Pool panels */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.pn{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.pn .ph{padding:14px 18px;font-size:12px;font-weight:650;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px}
+.pn .ph .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#e53935}
+.pn .ph .lbl{font-size:10px;color:#9ca3af;font-weight:400;margin-left:auto}
+/* Column header */
+.ch{display:flex;align-items:center;gap:8px;padding:5px 18px;font-size:10px;color:#9ca3af;border-bottom:1px solid #f3f4f6;font-weight:500}
+.ch .cn{flex:1}.ch .ca{min-width:48px;text-align:right}.ch .cb{min-width:44px;text-align:right}.ch .cd{min-width:54px;text-align:right}.ch .cy{min-width:28px;text-align:center}
+
+/* Pool row */
+.r{display:flex;align-items:center;gap:8px;padding:10px 18px;border-bottom:1px solid #f9fafb;transition:background 0.1s}
+.r:hover{background:#f8fafc}
+/* Inline stock expansion */
+.srw-sub{margin:0;padding:0 18px 6px 34px;background:#f8fafc;border-left:2px solid #e5e7eb}
+.ssub{display:flex;align-items:center;gap:10px;padding:2px 0;font-size:10px;color:#6b7280}
+.ssub .ssn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ssub .ssr{min-width:48px;text-align:right;font-weight:600;font-size:10px}
+/* Column header adjustment for swapped B1/D */
+.ch .cb{min-width:54px;text-align:right;font-weight:650;color:#1a1d23}
+.ch .cd{min-width:44px;text-align:right}
+.r .nm{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .bl{font-size:11px;min-width:44px;text-align:right;color:#9ca3af}
+.r .dl{font-size:16px;font-weight:700;min-width:54px;text-align:right}
+.r .am{font-size:10px;min-width:48px;text-align:right;color:#9ca3af;font-weight:400}
+.r .dy{font-size:9px;min-width:28px;text-align:center;padding:2px 0;border-radius:3px;background:#f3f4f6;color:#6b7280;font-weight:600}
+.up{color:#dc2626}.dn{color:#059669}.mute{color:#9ca3af}
+
+/* Snapshot */
+.snap{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.snap .ph{padding:14px 18px;font-size:12px;font-weight:650;border-bottom:1px solid #f3f4f6}
+.snap-cols{display:grid;grid-template-columns:1fr 1fr}
+.snap-col{padding:6px 0}
+.snap-col+.snap-col{border-left:1px solid #f3f4f6}
+.sh{display:flex;align-items:center;padding:5px 18px 3px;font-size:10px;color:#9ca3af;gap:8px}
+.sh .sl{flex:1;font-weight:600}
+.sr{display:flex;align-items:center;gap:8px;padding:4px 18px;font-size:11px}
+.sr .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr .sd{font-size:10px;min-width:44px;text-align:right}
+.sr .sv{font-size:12px;font-weight:650;min-width:44px;text-align:right}
+
+.ft{text-align:center;padding:20px 0 8px;font-size:10px;color:#9ca3af;line-height:1.7}
+@media(max-width:640px){.stl.theme{grid-template-columns:repeat(2,1fr)}.cols,.snap-cols{grid-template-columns:1fr}.snap-col+.snap-col{border-left:none;border-top:1px solid #f0f1f3}.mc{min-width:56px}}
+</style></head><body><div class="g">
+
+<div class="hd">
+<div class="tl">
+<h1>主力资金监控</h1>
+<span class="state">熊市下跌 · 观望</span>
+</div>
+<div class="dsb">B1池 · B1排序 · 参考 · 行业30 · 概念30<span class="dt">2026-07-06 15:50</span></div>
+<div class="mrow">
+<div class="mcards">
+<div class="mc"><span class="lbl">0AMV</span><span class="val mute">休眠</span></div>
+<div class="mc"><span class="lbl">DIF</span><span class="val"><span class="dn">↓</span><span class="dn">-7</span></span></div>
+<div class="mc"><span class="lbl">大盘</span><span class="val dn">-0.1%</span></div>
+<div class="mc"><span class="lbl">广度</span><span class="val mute">47%</span></div>
+<div class="mc"><span class="lbl">更替</span><span class="val mute">0%</span></div>
+</div>
+</div>
+<div class="stsec">
+<div class="stl"><b>快进快出</b> · B1池() · B1值排序 · 行业30候选 · 概念30候选</div>
+<div class="stl theme"><span class="tp" data-sectors="CXO概念,仿制药,减肥药,创新药,化学制药,医疗服务,生物制品"><span class="tpl"><span class="tpn">医药/医疗</span><span class="tpp">83.7%</span></span><span class="spark"><i style="height:8px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:11px"></i><i style="height:4px"></i><i style="height:9px"></i><i style="height:6px"></i></span></span><span class="tp" data-sectors="保险,全国性银行,地方性银行"><span class="tpl"><span class="tpn">金融</span><span class="tpp">7.7%</span></span><span class="spark"><i style="height:6px"></i><i style="height:2px"></i><i style="height:6px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:2px"></i><i style="height:12px"></i><i style="height:2px"></i><i style="height:7px"></i><i style="height:7px"></i></span></span><span class="tp" data-sectors="养殖业,饲料"><span class="tpl"><span class="tpn">农林牧渔</span><span class="tpp">3.7%</span></span><span class="spark"><i style="height:4px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:3px"></i><i style="height:10px"></i><i style="height:2px"></i><i style="height:13px"></i><i style="height:8px"></i><i style="height:3px"></i><i style="height:9px"></i></span></span><span class="tp" data-sectors="煤炭开采"><span class="tpl"><span class="tpn">材料/资源</span><span class="tpp">3.1%</span></span><span class="spark"><i style="height:2px"></i><i style="height:5px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:6px"></i><i style="height:7px"></i><i style="height:11px"></i><i style="height:5px"></i><i style="height:7px"></i><i style="height:3px"></i></span></span><span class="tp" data-sectors="航运港口"><span class="tpl"><span class="tpn">交通物流</span><span class="tpp">1.9%</span></span><span class="spark"><i style="height:6px"></i><i style="height:3px"></i><i style="height:2px"></i><i style="height:2px"></i><i style="height:3px"></i><i style="height:6px"></i><i style="height:10px"></i><i style="height:5px"></i><i style="height:10px"></i><i style="height:6px"></i></span></span><span class="tp new" data-sectors="NMN概念,维生素,免疫治疗,肝炎概念,辅助生殖,幽门螺杆菌,宠物经济,民营医院"><span class="tpl"><span class="tpn">NMN</span><span class="tpp">8个</span></span></span></div>
+	<div class="diffusion"><span class="di">医药/医疗 → 医药商业 r=0.90 · 医疗器械 r=0.89</span><span class="di">金融 → 软件服务 r=0.90 · 环境治理 r=0.81</span><span class="di">材料/资源 → 贸易 r=0.78 · 金属新材料 r=0.70</span><span class="di">交通物流 → 汽车零部件 r=0.74 · 环境监测 r=0.72</span></div>
+<div id="themeTopBar" class="theme-top"><span class="tbc"></span></div>
+<div class="note info"><div class="nt">等待信号</div><div class="nd">当前市态不在六场景覆盖范围，建议观望等待。</div></div>
+</div>
+</div>
+
+<div class="cols">
+<div class="pn">
+<div class="ph"><span class="dot"></span>策略池 · 行业<span class="lbl">B1池 B1↓</span></div>
+<div class="ch"><span class="cn">板块</span><span class="ca">成交</span><span class="cd">Δ改善</span><span class="cb">B1</span><span class="cy">持续</span></div>
+<div class="r"><span class="nm">煤炭开采</span><span class="am">137亿</span><span class="bl up">+0.183</span><span class="dl up">+0.694</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">全国性银行</span><span class="am">198亿</span><span class="bl up">+1.076</span><span class="dl up">+0.656</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">地方性银行</span><span class="am">89亿</span><span class="bl up">+0.216</span><span class="dl up">+0.628</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">养殖业</span><span class="am">103亿</span><span class="bl up">+1.036</span><span class="dl up">+0.626</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">保险</span><span class="am">115亿</span><span class="bl up">+0.205</span><span class="dl up">+0.617</span><span class="dy">2d</span></div>
+<div class="r"><span class="nm">化学制药</span><span class="am">642亿</span><span class="bl dn">-0.069</span><span class="dl up">+0.586</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">航运港口</span><span class="am">108亿</span><span class="bl dn">-0.042</span><span class="dl up">+0.559</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">生物制品</span><span class="am">408亿</span><span class="bl dn">-0.121</span><span class="dl up">+0.557</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">饲料</span><span class="am">39亿</span><span class="bl up">+0.837</span><span class="dl up">+0.519</span><span class="dy mute">-</span></div>
+<div class="r"><span class="nm">医疗服务</span><span class="am">387亿</span><span class="bl dn">-0.098</span><span class="dl up">+0.516</span><span class="dy">2d</span></div>
+</div>
+<div class="pn">
+<div class="ph"><span class="dot"></span>策略池 · 概念<span class="lbl">B1池 B1↓</span></div>
+<div class="ch"><span class="cn">板块</span><span class="ca">成交</span><span class="cd">Δ改善</span><span class="cb">B1</span><span class="cy">持续</span></div>
+<div class="r"><span class="nm">猪肉</span><span class="am">134亿</span><span class="bl up">+0.431</span><span class="dl up">+0.654</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">中特估</span><span class="am">1225亿</span><span class="bl dn">-0.011</span><span class="dl up">+0.615</span><span class="dy">2d</span></div>
+<div class="r"><span class="nm">含H股</span><span class="am">3820亿</span><span class="bl dn">-0.058</span><span class="dl up">+0.608</span><span class="dy">2d</span></div>
+<div class="r"><span class="nm">创新药</span><span class="am">1432亿</span><span class="bl dn">-0.064</span><span class="dl up">+0.601</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">鸡肉</span><span class="am">66亿</span><span class="bl up">+0.874</span><span class="dl up">+0.573</span><span class="dy mute">-</span></div>
+<div class="r" onclick="toggleStocks(this)"><span class="nm">仿制药</span><span class="am">477亿</span><span class="bl dn">-0.036</span><span class="dl up">+0.565</span><span class="dy">4d</span></div><div class="srw-sub" style="display:none"><div class="ssub"><span class="ssn">东阳光</span><span class="ssr up">+1.6%</span></div></div>
+<div class="r"><span class="nm">减肥药</span><span class="am">492亿</span><span class="bl dn">-0.032</span><span class="dl up">+0.559</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">免疫治疗</span><span class="am">415亿</span><span class="bl dn">-0.064</span><span class="dl up">+0.542</span><span class="dy">2d</span></div>
+<div class="r"><span class="nm">肝炎概念</span><span class="am">434亿</span><span class="bl dn">-0.080</span><span class="dl up">+0.521</span><span class="dy">4d</span></div>
+<div class="r"><span class="nm">CXO概念</span><span class="am">526亿</span><span class="bl dn">-0.029</span><span class="dl up">+0.515</span><span class="dy">2d</span></div>
+</div>
+</div>
+
+<div class="snap">
+<div class="ph">全板块 B1 快照</div>
+<div class="snap-cols">
+<div class="snap-col">
+<div class="sh"><span class="sl" style="color:#e53935">流入 TOP 10</span><span style="min-width:44px;text-align:right">Δ</span><span style="min-width:44px;text-align:right">B1</span></div>
+<div class="sr"><span class="n">煤炭开采</span><span class="sd up">+0.106</span><span class="sv up">+0.694</span></div>
+<div class="sr"><span class="n">全国性银行</span><span class="sd up">+0.113</span><span class="sv up">+0.656</span></div>
+<div class="sr"><span class="n">地方性银行</span><span class="sd up">+0.224</span><span class="sv up">+0.628</span></div>
+<div class="sr"><span class="n">养殖业</span><span class="sd dn">-0.011</span><span class="sv up">+0.626</span></div>
+<div class="sr"><span class="n">保险</span><span class="sd dn">-0.024</span><span class="sv up">+0.617</span></div>
+<div class="sr"><span class="n">化学制药</span><span class="sd dn">-0.234</span><span class="sv up">+0.586</span></div>
+<div class="sr"><span class="n">航运港口</span><span class="sd up">+0.951</span><span class="sv up">+0.559</span></div>
+<div class="sr"><span class="n">生物制品</span><span class="sd dn">-0.267</span><span class="sv up">+0.557</span></div>
+<div class="sr"><span class="n">饲料</span><span class="sd dn">-0.029</span><span class="sv up">+0.519</span></div>
+<div class="sr"><span class="n">医疗服务</span><span class="sd dn">-0.295</span><span class="sv up">+0.516</span></div>
+</div>
+<div class="snap-col">
+<div class="sh"><span class="sl" style="color:#0d904f">流出 TOP 10</span><span style="min-width:44px;text-align:right">Δ</span><span style="min-width:44px;text-align:right">B1</span></div>
+<div class="sr"><span class="n">光学光电</span><span class="sd dn">-0.026</span><span class="sv dn">-0.495</span></div>
+<div class="sr"><span class="n">通信设备</span><span class="sd dn">-0.007</span><span class="sv dn">-0.479</span></div>
+<div class="sr"><span class="n">稀有金属</span><span class="sd dn">-1.047</span><span class="sv dn">-0.467</span></div>
+<div class="sr"><span class="n">玻璃玻纤</span><span class="sd up">+0.045</span><span class="sv dn">-0.466</span></div>
+<div class="sr"><span class="n">通用设备</span><span class="sd dn">-0.029</span><span class="sv dn">-0.461</span></div>
+<div class="sr"><span class="n">消费电子</span><span class="sd dn">-0.022</span><span class="sv dn">-0.460</span></div>
+<div class="sr"><span class="n">元器件</span><span class="sd up">+0.018</span><span class="sv dn">-0.457</span></div>
+<div class="sr"><span class="n">自动化设备</span><span class="sd dn">-0.733</span><span class="sv dn">-0.433</span></div>
+<div class="sr"><span class="n">化学制品</span><span class="sd dn">-0.725</span><span class="sv dn">-0.432</span></div>
+<div class="sr"><span class="n">工业金属</span><span class="sd dn">-0.973</span><span class="sv dn">-0.431</span></div>
+</div></div></div>
+
+<div class="ft">2026-07-06 15:50 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
+<script>
+function toggleStocks(row){
+ var sub=row.nextElementSibling;
+ if(sub && sub.classList.contains('srw-sub')){
+  sub.style.display=sub.style.display==='none'?'block':'none';
+ }
+}
+// Theme pill click: highlight matching rows + show TOP5 stock bar
+(function(){
+ var themeTopStocks={"医药/医疗": [["东阳光", 1.6]]};
+ var currentTheme=null;
+ var pills=document.querySelectorAll('.tp[data-sectors]');
+ var topBar=document.getElementById('themeTopBar');
+ pills.forEach(function(p){
+  p.addEventListener('click',function(){
+   var theme=this.textContent.replace(/<[^>]*>/g,'').split(/\d/)[0];
+   if(currentTheme===theme){
+    // Deselect
+    currentTheme=null;
+    this.classList.remove('active');
+    topBar.style.display='none';
+    document.querySelectorAll('.pn .r').forEach(function(r){r.classList.remove('hl')});
+    return;
+   }
+   // Deselect previous
+   if(currentTheme){
+    document.querySelectorAll('.tp.active').forEach(function(t){t.classList.remove('active')});
+   }
+   currentTheme=theme;
+   this.classList.add('active');
+   // Highlight matching sectors
+   var secs=(this.dataset.sectors||'').split(',');
+   document.querySelectorAll('.pn .r').forEach(function(r){
+    var nm=r.querySelector('.nm');
+    r.classList.toggle('hl', nm && secs.indexOf(nm.textContent.trim())>=0);
+   });
+   // Show TOP5 stocks
+   var stocks=themeTopStocks[theme];
+   if(stocks){
+    var html='<span class="tbclose" onclick="document.getElementById(\'themeTopBar\').style.display=\'none\';currentTheme=null">&times;</span>';
+    stocks.forEach(function(s){
+     var cls=s[1]>0?'up':'dn';
+     html+='<span class="tbs"><span class="tbn">'+s[0]+'</span><span class="tbr '+cls+'">'+(s[1]>0?'+':'')+s[1].toFixed(1)+'%</span></span>';
+    });
+    topBar.querySelector('.tbc').innerHTML=html;
+    topBar.style.display='flex';
+   }
+  });
+ });
+})();
+</script>
+<script>
+</script>
+</div></body></html>
