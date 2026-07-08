@@ -72,6 +72,13 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 .theme-top .tbr{font-weight:600;font-size:10px}
 .tcard.active{box-shadow:0 0 0 2px var(--blue)}
 .pool .row.hl{background:#eef2ff}
+.hm-chart{background:var(--card);border-radius:8px;padding:12px 14px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.hm-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.hm-row+.hm-row{border-top:1px solid #f4f5f8}
+.hm-name{font-size:10px;color:var(--ink-mid);width:64px;flex-shrink:0;text-align:right;overflow:hidden;text-overflow:ellipsis}
+.hm-cells{display:flex;gap:2px;flex:1;height:16px}
+.hm-cells i{flex:1;min-width:2px;background:var(--blue);border-radius:1.5px}
+.hm-hint{font-size:9px;color:var(--ink-dim);text-align:right;margin-top:4px}
 .pools{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:32px}
 .pool{background:var(--card);border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
 .pool .ph{font-size:12px;font-weight:650;padding:16px 20px 10px;display:flex;align-items:center}
@@ -109,14 +116,16 @@ body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSys
 <div class="hd"><h1>主力资金监控</h1><span class="state" id="state-tag"></span><span class="date" id="hd-date"></span></div>
 <div class="metrics" id="metrics"></div>
 <div class="note" id="market-note"></div>
-<div class="sec">主题资金流向</div><div class="themes" id="themes"></div>
+<div class="sec">主力方向</div><div class="themes" id="themes"></div>
+<div class="hm-chart" id="heatmap"></div>
+<div class="hm-hint">每行一主题 · 每列一交易日 · 色深=资金强度</div>
 <div class="theme-top" id="themeTopBar"><span class="tbc"></span></div>
 <div class="sec">策略池</div><div class="pools" id="pools"></div>
 <div class="snap"><div class="ph">全板块 B1 快照</div><div class="cols" id="snapshot"></div></div>
 <div class="ft">© 2026 <span>Zhubin</span> · 数据来源通达信 · 仅限个人研究</div>
 </div>
 <script>
-var D={"date": "2026-07-07 周二", "state": "熊市下跌 · 观望", "amv": "休眠", "dif_arrow": "↓", "dif_val": "-12", "mkt": "-1.3%", "breadth": "6%", "turnover": "0%", "note": {"state": "info", "title": "等待信号", "desc": "当前市态不在六场景覆盖范围，建议观望等待。"}, "themes": [], "themeTopStocks": {"机器人/智造": [["艾迪精密", 5.5], ["徐工机械", 3.8], ["三一重工", 2.9]], "半导体/芯片": [["东微半导", 16.3], ["华天科技", 10.0], ["长电科技", 6.2]], "AI/算力": [["光迅科技", 6.0], ["天孚通信", 3.0], ["中际旭创", 2.1]], "游戏传媒": [["星辉娱乐", 14.1], ["冰川网络", 7.3], ["巨人网络", 6.0], ["奥飞娱乐", 5.3], ["中国电影", 3.4]], "金融": [["建设银行", 2.6], ["中国银行", 2.5], ["工商银行", 2.0]]}, "pool_ind": [["通信设备", 0.443, 0, 0, 0.921, "", 1696.0, 0], ["影视院线", 0.313, 0, 0, 0.627, "", 66.0, 0], ["工程机械", 0.234, 0, 0, 0.603, "", 125.0, 0], ["半导体", 0.623, 0, 0, 0.224, "", 4695.0, 0], ["游戏", 0.53, 0, 0, 0.088, "", 268.0, 0], ["油气开采", 0.31, 0, 0, -0.126, "", 38.0, 0], ["全国性银行", 0.421, 0, 0, -0.235, "", 178.0, 0]], "pool_con": [["培育钻石", 0.314, 0, 0, -0.145, "", 239.0, 0]], "snap_in": [["半导体", -0.246, 0.623], ["游戏", 0.051, 0.53], ["通信设备", -0.439, 0.443], ["全国性银行", 0.704, 0.421], ["影视院线", -0.072, 0.313], ["油气开采", 0.517, 0.31], ["工程机械", 0.639, 0.234], ["其他电子", -1.257, -0.481]], "snap_out": [["元器件", -1.254, -0.475], ["通用设备", -1.204, -0.471], ["光学光电", -1.328, -0.444], ["化学制品", -0.952, -0.435], ["化学制药", -0.071, -0.434], ["生物制品", -0.076, -0.433], ["专用设备", -1.078, -0.428], ["能源金属", -1.069, -0.424], ["电池", -1.117, -0.421]]};
+var D={"date": "2026-07-07 周二", "state": "熊市下跌 · 观望", "amv": "休眠", "dif_arrow": "↓", "dif_val": "-12", "mkt": "-1.3%", "breadth": "6%", "turnover": "0%", "note": {"state": "info", "title": "等待信号", "desc": "当前市态不在六场景覆盖范围，建议观望等待。"}, "themes": [{"name": "游戏传媒", "pct": 32.9, "sectors": "影视院线,游戏", "heatmap": [0.07, 0.1, 0.06, 0.1, 0.18, 0.21, 0.12, 0.11, 0.09, 0.09]}, {"name": "半导体/芯片", "pct": 24.3, "sectors": "半导体", "heatmap": [0.38, 0.32, 0.09, 0.18, 0.45, 0.17, 0.06, 0.08, 0.08, 0.08]}, {"name": "AI/算力", "pct": 17.3, "sectors": "通信设备", "heatmap": [0.29, 0.19, 0.06, 0.1, 1.0, 0.77, 0.09, 0.65, 0.09, 0.07]}, {"name": "金融", "pct": 16.4, "sectors": "全国性银行", "heatmap": [0.06, 0.12, 0.06, 0.14, 0.08, 0.18, 0.09, 0.14, 0.14, 0.07]}, {"name": "机器人/智造", "pct": 9.1, "sectors": "工程机械", "heatmap": [0.13, 0.1, 0.06, 0.09, 0.4, 0.33, 0.12, 0.43, 0.06, 0.07]}, {"name": "新能源/电池", "pct": 0.0, "sectors": "", "heatmap": [0.09, 0.1, 0.07, 0.1, 0.45, 0.38, 0.06, 0.29, 0.06, 0.06]}, {"name": "军工/航天", "pct": 0.0, "sectors": "", "heatmap": [0.11, 0.07, 0.08, 0.08, 0.29, 0.22, 0.06, 0.26, 0.06, 0.06]}, {"name": "医药/医疗", "pct": 0.0, "sectors": "", "heatmap": [0.1, 0.08, 0.06, 0.43, 0.08, 0.45, 0.21, 0.39, 0.27, 0.06]}], "themeTopStocks": {"机器人/智造": [["艾迪精密", 5.5], ["徐工机械", 3.8], ["三一重工", 2.9]], "半导体/芯片": [["东微半导", 16.3], ["华天科技", 10.0], ["长电科技", 6.2]], "AI/算力": [["光迅科技", 6.0], ["天孚通信", 3.0], ["中际旭创", 2.1]], "游戏传媒": [["星辉娱乐", 14.1], ["冰川网络", 7.3], ["巨人网络", 6.0], ["奥飞娱乐", 5.3], ["中国电影", 3.4]], "金融": [["建设银行", 2.6], ["中国银行", 2.5], ["工商银行", 2.0]]}, "pool_ind": [["通信设备", 0.443, 0, 0, 0.921, "", 1696.0, 0], ["影视院线", 0.313, 0, 0, 0.627, "", 66.0, 0], ["工程机械", 0.234, 0, 0, 0.603, "", 125.0, 0], ["半导体", 0.623, 0, 0, 0.224, "", 4695.0, 0], ["游戏", 0.53, 0, 0, 0.088, "", 268.0, 0], ["油气开采", 0.31, 0, 0, -0.126, "", 38.0, 0], ["全国性银行", 0.421, 0, 0, -0.235, "", 178.0, 0]], "pool_con": [["培育钻石", 0.314, 0, 0, -0.145, "", 239.0, 0]], "snap_in": [["半导体", -0.246, 0.623], ["游戏", 0.051, 0.53], ["通信设备", -0.439, 0.443], ["全国性银行", 0.704, 0.421], ["影视院线", -0.072, 0.313], ["油气开采", 0.517, 0.31], ["工程机械", 0.639, 0.234], ["其他电子", -1.257, -0.481]], "snap_out": [["元器件", -1.254, -0.475], ["通用设备", -1.204, -0.471], ["光学光电", -1.328, -0.444], ["化学制品", -0.952, -0.435], ["化学制药", -0.071, -0.434], ["生物制品", -0.076, -0.433], ["专用设备", -1.078, -0.428], ["能源金属", -1.069, -0.424], ["电池", -1.117, -0.421]]};
 var c=function(v){return v>0?'up':(v<0?'dn':'mute');};
 var f=function(v,d){d=d||2;return v>=0?'+'+v.toFixed(d):v.toFixed(d);};
 document.getElementById('state-tag').textContent=D.state||'';
@@ -130,17 +139,24 @@ var mc=document.getElementById('metrics');
 .forEach(function(m){mc.innerHTML+='<div class="mc"><div class="lbl">'+m[0]+'</div><div class="val '+m[2]+'">'+m[1]+'</div></div>';});
 var n=D.note;
 if(n){var el=document.getElementById('market-note');el.className='note '+(n.state||'info');el.innerHTML='<div class="nt">'+n.title+'</div><div class="nd">'+n.desc+'</div>';}
-var gmax=1;(D.themes||[]).forEach(function(t){t.bars.forEach(function(h){if(h>gmax)gmax=h;})});
 document.getElementById('themes').innerHTML=(D.themes||[]).slice(0,8).map(function(t,i){
- var bars='';
- if(t.bars&&t.bars.length){
-  bars=t.bars.map(function(h,j){
-   var ht=Math.max(2,Math.round((h/Math.max(gmax,1))*40));
-   return '<i style="height:'+ht+'px;'+(j===t.bars.length-1?'"':'opacity:0.22"')+'></i>';
-  }).join('');
- }
- var secs=t.sectors||'';var pct=t.pct||0;return '<div class=\"tcard c'+i+'\" data-sectors=\"'+secs+'\" onclick=\"themeClick(this)\"><div class=\"tr\"><div class=\"tn\">'+t.name+'</div><div class=\"tp\">'+pct.toFixed(1)+'<span class=\"pct-sign\">%</span></div></div><div class=\"spark\">'+bars+'</div></div>';
+ var secs=t.sectors||'';return '<div class=\"tcard c'+i+'\" data-sectors=\"'+secs+'\" onclick=\"themeClick(this)\"><div class=\"tr\"><div class=\"tn\">'+t.name+'</div><div class=\"tp\">'+t.pct.toFixed(1)+'<span class=\"pct-sign\">%</span></div></div></div>';
 }).join('');
+// Heatmap
+(function(){
+ var ths=D.themes||[];if(!ths.length)return;
+ var all=[];ths.forEach(function(t){if(t.heatmap)all.push.apply(all,t.heatmap)});
+ var gmax=Math.max.apply(null,all)||1;
+ var rows=ths.map(function(t){
+  var cells='';(t.heatmap||[]).forEach(function(v,i){
+   var a=0.06+(v/gmax)*0.94;
+   var last=i===9?' last':'';
+   cells+='<i class=\"c'+last+'\" style=\"opacity:'+a.toFixed(2)+'\"></i>';
+  });
+  return '<div class=\"hm-row\"><span class=\"hm-name\">'+t.name+'</span><div class=\"hm-cells\">'+cells+'</div></div>';
+ });
+ document.getElementById('heatmap').innerHTML=rows.join('');
+})();
 function poolTbl(title,items,showAmt){
  var h='<div class="pool"><div class="ph"><span class="dot"></span>'+title+'<span class="sub">B1 &#8595;</span></div><table>';
  h+='<tr><th>板块</th><th class="r">成交</th><th class="r">B1</th><th class="r">Δ改善</th></tr>';
