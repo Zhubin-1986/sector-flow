@@ -1,0 +1,224 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0"><title>主力资金监控</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f4f5f7;color:#1a1d23;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;padding:24px 16px 48px;-webkit-font-smoothing:antialiased}
+.g{max-width:920px;margin:0 auto}
+
+/* Header card */
+.hd{background:#fff;border-radius:16px;margin-bottom:16px;box-shadow:0 2px 12px rgba(0,0,0,0.04);overflow:hidden}
+/* Title row */
+.tl{padding:22px 28px 10px;display:flex;align-items:center}
+.tl h1{font-size:20px;font-weight:700;letter-spacing:2px;color:#111827;margin:0}
+.tl .state{font-size:11px;font-weight:500;color:#e53935;margin-left:14px}
+.tl .state::before{content:'';display:inline-block;width:6px;height:6px;border-radius:50%;background:#e53935;margin-right:5px;vertical-align:middle;position:relative;top:-1px}
+/* Strategy subtitle */
+.dsb{padding:4px 28px 18px;font-size:11px;color:#9ca3af;border-bottom:1px solid #f3f4f6;display:flex;align-items:baseline}
+.dsb .dt{margin-left:auto;font-size:11px;color:#9ca3af;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* Metric cards row */
+.mrow{padding:14px 28px;border-bottom:1px solid #f3f4f6}
+/* Metric cards */
+.mcards{display:flex;gap:8px;flex-wrap:wrap}
+.mc{background:#f8fafb;border-radius:8px;padding:10px 14px;text-align:center;min-width:64px;flex:1}
+.mc .lbl{font-size:10px;color:#9ca3af;display:block;margin-bottom:3px;letter-spacing:0.3px}
+.mc .val{font-size:16px;font-weight:650}
+.mc .val.up{color:#dc2626}.mc .val.dn{color:#059669}.mc .val.warn{color:#d97706}.mc .val.mute{color:#9ca3af}
+
+/* Strategy + note area */
+.stsec{padding:14px 28px}
+.stsec .stl{font-size:11px;color:#5f6368;line-height:1.6}
+.stsec .stl b{color:#1a1d23}
+
+/* Strategy line */
+.stsec .stl{margin-bottom:6px}
+
+/* Market note */
+.note{border-radius:10px;padding:12px 16px;line-height:1.5}
+.note .nt{font-size:12px;font-weight:600;margin-bottom:2px}
+.note .nd{font-size:10px;color:#6b7280;line-height:1.6}
+.note.danger{background:#fef2f2;border:1px solid #fecaca}
+.note.danger .nt{color:#991b1b}
+.note.warn{background:#fffbeb;border:1px solid #fde68a}
+.note.warn .nt{color:#92400e}
+.note.good,.note.great{background:#eff6ff;border:1px solid #bfdbfe}
+.note.good .nt,.note.great .nt{color:#1e40af}
+.note.info{background:#f3f4f6;border:1px solid #e5e7eb}
+.note.info .nt{color:#6b7280}
+
+/* Theme pills */
+.stl.theme{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+/* Theme TOP5 stock bar */
+.theme-top{display:none;align-items:center;gap:10px;padding:6px 12px;background:#f8f9fa;border-radius:6px;margin-top:6px;font-size:10px;flex-wrap:wrap}
+.theme-top .tbc{display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex:1}
+.theme-top .tbclose{color:#9aa0a6;cursor:pointer;font-size:14px;line-height:1}
+.theme-top .tbs{display:inline-flex;align-items:center;gap:4px;white-space:nowrap}
+.theme-top .tbn{color:#5f6368;max-width:60px;overflow:hidden;text-overflow:ellipsis}
+.theme-top .tbr{font-weight:600;font-size:10px}
+.tp{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:11px;padding:10px 12px;border-radius:6px;background:#e8f0fe;color:#1a5fa8;font-weight:500;min-width:0;cursor:pointer;user-select:none;transition:all 0.2s}
+.tp:hover{filter:brightness(0.92)}
+.tp.active{background:#1a5fa8;color:#fff}
+.tp .tpl{display:flex;flex-direction:column;gap:2px;flex-shrink:0}
+.tp .tpn{font-size:11px;line-height:1.2}
+.tp .tpp{font-size:15px;font-weight:700;line-height:1.1;color:#1a5fa8}
+.tp.active .tpp{color:#fff}
+.tp.new{background:#fce4ec;color:#880e4f;border:1px dashed #e91e63}
+.tp.new .tpp{color:#880e4f}
+.tp.new.active{background:#880e4f;color:#fff;border-style:solid}
+.tp.new.active .tpp{color:#fff}
+.r.hl{background:#fff3e0}
+/* Inline sparkline bars */
+.spark{display:flex;align-items:flex-end;gap:2px;height:28px;flex:1;justify-content:flex-end;overflow:hidden}
+.spark i{flex:1;max-width:7px;min-width:1px;background:#1a5fa8;border-radius:1px;display:inline-block;min-height:2px;opacity:0.3}
+.spark i:last-child{opacity:1}
+.tp.active .spark i{background:#fff}
+.tp.new .spark i{background:#880e4f}
+.tp.dim{opacity:0.45}
+.spark-chart{background:#fcfdfe;border-radius:8px;padding:12px 14px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04)}
+.hm-row{display:flex;align-items:center;gap:8px;padding:3px 0}
+.hm-row + .hm-row{border-top:1px solid #f4f5f8}
+.hm-name{font-size:11px;color:#3a4150;width:64px;flex-shrink:0;text-align:right;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.hm-dates{padding:0 0 2px 0!important;border:none!important}
+.hm-dates .hm-name{font-size:0}
+.hm-dates .hm-cells{height:auto!important}
+.hm-dates .hm-cells i{background:transparent!important;border-radius:0!important;min-width:0!important;font-size:8px;color:#586278;font-weight:600;font-style:normal;text-align:center;line-height:1}
+.hm-legend{font-size:9px;color:#9098aa;text-align:right;margin-top:4px}
+.dv{border:none;border-top:1px solid #dfe2e8;margin:20px 0 4px}
+.hm-cells{display:flex;gap:2px;flex:1;height:16px}
+.hm-cells i{flex:1;min-width:2px;background:#c53030;border-radius:1.5px}
+
+/* Pool panels */
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.pn{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.pn .ph{padding:14px 18px;font-size:12px;font-weight:650;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;gap:8px}
+.pn .ph .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;background:#e53935}
+.pn .ph .lbl{font-size:10px;color:#9ca3af;font-weight:400;margin-left:auto}
+/* Column header */
+.ch{display:flex;align-items:center;gap:8px;padding:5px 18px;font-size:10px;color:#9ca3af;border-bottom:1px solid #f3f4f6;font-weight:500}
+.ch .cn{flex:1}.ch .ca{min-width:48px;text-align:right}.ch .cb{min-width:44px;text-align:right}.ch .cd{min-width:54px;text-align:right}.ch .cy{min-width:28px;text-align:center}
+
+/* Pool row */
+.r{display:flex;align-items:center;gap:8px;padding:10px 18px;border-bottom:1px solid #f9fafb;transition:background 0.1s}
+.r:hover{background:#f8fafc}
+/* Inline stock expansion */
+.srw-sub{margin:0;padding:0 18px 6px 34px;background:#f8fafc;border-left:2px solid #e5e7eb}
+.ssub{display:flex;align-items:center;gap:10px;padding:2px 0;font-size:10px;color:#6b7280}
+.ssub .ssn{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ssub .ssr{min-width:48px;text-align:right;font-weight:600;font-size:10px}
+/* Treemap */
+.treemap{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}
+.tg{background:#fcfdfe;border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.04);padding:10px}
+.tgn{font-size:11px;color:#3a4150;font-weight:600;margin-bottom:6px}
+.tm{display:flex;flex-direction:column;justify-content:center;align-items:center;padding:6px 4px;min-width:60px;border:1px solid #fff;cursor:default;transition:filter 0.15s;box-sizing:border-box}
+.tm:hover{filter:brightness(0.88)}
+.tm .tmn{font-size:12px;line-height:1.3;text-align:center;overflow:hidden;text-overflow:ellipsis;max-width:100%;font-weight:500;color:#3a4150}
+.tm .tmb{font-size:10px;line-height:1.2;text-align:center;font-weight:700;color:inherit}
+.tm.up .tmb{color:#c53030}
+.tm.dn .tmb{color:#0d7c4e}
+/* Column header adjustment for swapped B1/D */
+.ch .cd{min-width:54px;text-align:right;font-weight:650;color:#1a1d23}
+.ch .cb{min-width:44px;text-align:right}
+.r .nm{flex:1;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.r .bl{font-size:16px;font-weight:700;min-width:54px;text-align:right}
+.r .dl{font-size:11px;min-width:44px;text-align:right;color:#9ca3af}
+.r .am{font-size:10px;min-width:48px;text-align:right;color:#9ca3af;font-weight:400}
+.r .dy{font-size:9px;min-width:28px;text-align:center;padding:2px 0;border-radius:3px;background:#f3f4f6;color:#6b7280;font-weight:600}
+.up{color:#dc2626}.dn{color:#059669}.mute{color:#9ca3af}
+
+/* Snapshot */
+.snap{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.04)}
+.snap .ph{padding:14px 18px;font-size:12px;font-weight:650;border-bottom:1px solid #f3f4f6}
+.snap-cols{display:grid;grid-template-columns:1fr 1fr}
+.snap-col{padding:6px 0}
+.snap-col+.snap-col{border-left:1px solid #f3f4f6}
+.slbl{font-size:10px;color:#586278;font-weight:600;padding:4px 18px 6px;border-bottom:1px solid #e8eaef}
+.sh{display:flex;align-items:center;padding:5px 18px 3px;font-size:10px;color:#9ca3af;gap:8px}
+.sh .sl{flex:1;font-weight:600}
+.sr{display:flex;align-items:center;gap:8px;padding:4px 18px;font-size:11px}
+.sr .n{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr .sd{font-size:10px;min-width:44px;text-align:right}
+.sr .sv{font-size:12px;font-weight:650;min-width:44px;text-align:right}
+
+.ft{text-align:center;padding:20px 0 8px;font-size:10px;color:#9ca3af;line-height:1.7}
+@media(max-width:640px){.stl.theme{grid-template-columns:repeat(2,1fr)}.cols,.snap-cols{grid-template-columns:1fr}.snap-col+.snap-col{border-left:none;border-top:1px solid #f0f1f3}.mc{min-width:56px}}
+</style></head><body><div class="g">
+
+<div class="hd">
+<div class="tl">
+<h1>主力资金监控</h1>
+<span class="state">熊市下跌 · 观望</span>
+</div>
+<div class="dsb">行业17 · 概念3<span class="dt">2026-07-13 16:13</span></div>
+<div class="mrow">
+<div class="mcards">
+<div class="mc"><span class="lbl">0AMV</span><span class="val mute">休眠</span></div>
+<div class="mc"><span class="lbl">DIF</span><span class="val"><span class="dn">↓</span><span class="dn">-28</span></span></div>
+<div class="mc"><span class="lbl">大盘</span><span class="val dn">-2.1%</span></div>
+<div class="mc"><span class="lbl">广度</span><span class="val mute">13%</span></div>
+<div class="mc"><span class="lbl">更替</span><span class="val mute">0%</span></div>
+</div>
+</div>
+<div class="stsec">
+<div class="spark-chart"><div class="hm-row hm-dates"><span class="hm-name"></span><div class="hm-cells"><i class="dt">06-30</i><i class="dt">07-01</i><i class="dt">07-02</i><i class="dt">07-03</i><i class="dt">07-06</i><i class="dt">07-07</i><i class="dt">07-08</i><i class="dt">07-09</i><i class="dt">07-10</i><i class="dt">07-13</i></div></div><div class="hm-row"><span class="hm-name" title="全国性银行 +0.67 · 地方性银行 +0.62 · 保险 +0.42">金融</span><div class="hm-cells"><i class="c" style="opacity:0.14;background:#c53030"></i><i class="c" style="opacity:0.16;background:#c53030"></i><i class="c" style="opacity:0.11;background:#0d7c4e"></i><i class="c" style="opacity:0.13;background:#c53030"></i><i class="c" style="opacity:0.11;background:#0d7c4e"></i><i class="c" style="opacity:0.12;background:#0d7c4e"></i><i class="c" style="opacity:0.13;background:#c53030"></i><i class="c" style="opacity:0.12;background:#c53030"></i><i class="c" style="opacity:0.14;background:#c53030"></i><i class="c last" style="opacity:0.11;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="铜缆高速连接 -0.41 · 航运港口 -0.38 · 冷链物流 -0.37">交通物流</span><div class="hm-cells"><i class="c" style="opacity:0.17;background:#c53030"></i><i class="c" style="opacity:0.18;background:#c53030"></i><i class="c" style="opacity:0.12;background:#c53030"></i><i class="c" style="opacity:0.28;background:#c53030"></i><i class="c" style="opacity:0.13;background:#c53030"></i><i class="c" style="opacity:0.22;background:#0d7c4e"></i><i class="c" style="opacity:0.23;background:#0d7c4e"></i><i class="c" style="opacity:0.06;background:#c53030"></i><i class="c" style="opacity:0.16;background:#c53030"></i><i class="c last" style="opacity:0.22;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="水利建设 -0.41 · PPP概念 -0.33 · 房地产开发 -0.33">地产基建</span><div class="hm-cells"><i class="c" style="opacity:0.25;background:#c53030"></i><i class="c" style="opacity:0.46;background:#c53030"></i><i class="c" style="opacity:0.19;background:#0d7c4e"></i><i class="c" style="opacity:0.43;background:#c53030"></i><i class="c" style="opacity:0.32;background:#0d7c4e"></i><i class="c" style="opacity:0.31;background:#0d7c4e"></i><i class="c" style="opacity:0.20;background:#0d7c4e"></i><i class="c" style="opacity:0.16;background:#0d7c4e"></i><i class="c" style="opacity:0.47;background:#c53030"></i><i class="c last" style="opacity:0.28;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="元宇宙概念 -0.40 · 网络游戏 -0.37 · 短剧游戏 -0.35">游戏传媒</span><div class="hm-cells"><i class="c" style="opacity:0.41;background:#c53030"></i><i class="c" style="opacity:0.46;background:#c53030"></i><i class="c" style="opacity:0.13;background:#0d7c4e"></i><i class="c" style="opacity:0.13;background:#0d7c4e"></i><i class="c" style="opacity:0.31;background:#0d7c4e"></i><i class="c" style="opacity:0.31;background:#0d7c4e"></i><i class="c" style="opacity:0.24;background:#0d7c4e"></i><i class="c" style="opacity:0.40;background:#c53030"></i><i class="c" style="opacity:0.50;background:#c53030"></i><i class="c last" style="opacity:0.30;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="智能家居 -0.42 · 新零售 -0.37 · 医美概念 -0.37">大消费</span><div class="hm-cells"><i class="c" style="opacity:0.06;background:#0d7c4e"></i><i class="c" style="opacity:0.74;background:#c53030"></i><i class="c" style="opacity:0.20;background:#c53030"></i><i class="c" style="opacity:0.63;background:#c53030"></i><i class="c" style="opacity:0.26;background:#0d7c4e"></i><i class="c" style="opacity:0.44;background:#0d7c4e"></i><i class="c" style="opacity:0.38;background:#0d7c4e"></i><i class="c" style="opacity:0.17;background:#0d7c4e"></i><i class="c" style="opacity:0.72;background:#c53030"></i><i class="c last" style="opacity:0.42;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="中药 +0.62 · 仿制药 +0.48 · 化学制药 -0.45">医药/医疗</span><div class="hm-cells"><i class="c" style="opacity:0.40;background:#0d7c4e"></i><i class="c" style="opacity:1.00;background:#c53030"></i><i class="c" style="opacity:0.10;background:#c53030"></i><i class="c" style="opacity:0.85;background:#c53030"></i><i class="c" style="opacity:0.40;background:#c53030"></i><i class="c" style="opacity:0.61;background:#0d7c4e"></i><i class="c" style="opacity:0.59;background:#0d7c4e"></i><i class="c" style="opacity:0.16;background:#c53030"></i><i class="c" style="opacity:1.00;background:#c53030"></i><i class="c last" style="opacity:0.43;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="消费电子概念 -0.51 · PCB概念 -0.49 · 智能穿戴 -0.48">消费电子</span><div class="hm-cells"><i class="c" style="opacity:0.70;background:#c53030"></i><i class="c" style="opacity:0.22;background:#c53030"></i><i class="c" style="opacity:0.44;background:#0d7c4e"></i><i class="c" style="opacity:0.27;background:#c53030"></i><i class="c" style="opacity:0.45;background:#0d7c4e"></i><i class="c" style="opacity:0.45;background:#0d7c4e"></i><i class="c" style="opacity:0.47;background:#0d7c4e"></i><i class="c" style="opacity:0.63;background:#c53030"></i><i class="c" style="opacity:0.34;background:#0d7c4e"></i><i class="c last" style="opacity:0.44;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="商业航天 -0.51 · 国防军工 -0.49 · 卫星导航 -0.48">军工/航天</span><div class="hm-cells"><i class="c" style="opacity:0.78;background:#c53030"></i><i class="c" style="opacity:0.49;background:#c53030"></i><i class="c" style="opacity:0.47;background:#0d7c4e"></i><i class="c" style="opacity:0.69;background:#c53030"></i><i class="c" style="opacity:0.50;background:#0d7c4e"></i><i class="c" style="opacity:0.50;background:#0d7c4e"></i><i class="c" style="opacity:0.51;background:#0d7c4e"></i><i class="c" style="opacity:0.66;background:#c53030"></i><i class="c" style="opacity:0.70;background:#c53030"></i><i class="c last" style="opacity:0.50;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="核电核能 -0.43 · 绿色电力 -0.43 · 智能电网 -0.42">电力电网</span><div class="hm-cells"><i class="c" style="opacity:0.62;background:#c53030"></i><i class="c" style="opacity:0.63;background:#c53030"></i><i class="c" style="opacity:0.51;background:#0d7c4e"></i><i class="c" style="opacity:0.78;background:#c53030"></i><i class="c" style="opacity:0.57;background:#0d7c4e"></i><i class="c" style="opacity:0.56;background:#0d7c4e"></i><i class="c" style="opacity:0.57;background:#0d7c4e"></i><i class="c" style="opacity:0.18;background:#c53030"></i><i class="c" style="opacity:0.79;background:#c53030"></i><i class="c last" style="opacity:0.52;background:#0d7c4e"></i></div></div><div class="hm-row"><span class="hm-name" title="CPO概念 -0.52 · 数据中心 -0.51 · 光通信 -0.49">算力基建</span><div class="hm-cells"><i class="c" style="opacity:0.99;background:#c53030"></i><i class="c" style="opacity:0.18;background:#c53030"></i><i class="c" style="opacity:0.60;background:#0d7c4e"></i><i class="c" style="opacity:0.29;background:#c53030"></i><i class="c" style="opacity:0.63;background:#0d7c4e"></i><i class="c" style="opacity:0.65;background:#0d7c4e"></i><i class="c" style="opacity:0.38;background:#0d7c4e"></i><i class="c" style="opacity:0.92;background:#c53030"></i><i class="c" style="opacity:0.23;background:#0d7c4e"></i><i class="c last" style="opacity:0.61;background:#0d7c4e"></i></div></div><div class="hm-legend">红入绿出 · 按B1强度排序</div></div>
+	<hr class="dv">
+	<div class="treemap"><div class="tg"><div class="tgn">金融</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="518" height="358" fill="rgb(61,141,86)" stroke="#fff" stroke-width="1"><title>互联金融 B1:-0.361 chg:-3.9% amt:639亿</title></rect><text x="260" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">互联金融</text><text x="260" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.9%</text></svg></div><div class="tg"><div class="tgn">地产基建</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="338" height="358" fill="rgb(56,136,82)" stroke="#fff" stroke-width="1"><title>水利建设 B1:-0.411 chg:-4.3% amt:1317亿</title></rect><text x="170" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">水利建设</text><text x="170" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.3%</text><rect x="341" y="1" width="177" height="162" fill="rgb(68,148,92)" stroke="#fff" stroke-width="1"><title>PPP概念 B1:-0.333 chg:-3.2% amt:316亿</title></rect><text x="429" y="79" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">PPP概念</text><text x="429" y="94" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.2%</text><rect x="341" y="165" width="177" height="193" fill="rgb(66,146,90)" stroke="#fff" stroke-width="1"><title>物业管理概念 B1:-0.313 chg:-3.3% amt:375亿</title></rect><text x="429" y="258" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">物业管理概念</text><text x="429" y="273" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.3%</text></svg></div><div class="tg"><div class="tgn">交通物流</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="247" height="358" fill="rgb(38,118,66)" stroke="#fff" stroke-width="1"><title>铜缆高速连接 B1:-0.406 chg:-6.1% amt:765亿</title></rect><text x="124" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">铜缆高速连接</text><text x="124" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.1%</text><rect x="250" y="1" width="138" height="358" fill="rgb(75,155,98)" stroke="#fff" stroke-width="1"><title>冷链物流 B1:-0.371 chg:-2.5% amt:432亿</title></rect><text x="319" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">冷链物流</text><text x="319" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-2.5%</text><rect x="391" y="1" width="127" height="358" fill="rgb(83,163,105)" stroke="#fff" stroke-width="1"><title>航运概念 B1:-0.370 chg:-1.7% amt:398亿</title></rect><text x="454" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">航运概念</text><text x="454" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-1.7%</text></svg></div><div class="tg"><div class="tgn">材料/资源</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="325" height="213" fill="rgb(42,122,69)" stroke="#fff" stroke-width="1"><title>稀土永磁 B1:-0.367 chg:-5.8% amt:588亿</title></rect><text x="163" y="104" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">稀土永磁</text><text x="163" y="119" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.8%</text><rect x="1" y="216" width="325" height="142" fill="rgb(45,125,72)" stroke="#fff" stroke-width="1"><title>碳纤维 B1:-0.366 chg:-5.5% amt:396亿</title></rect><text x="163" y="284" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">碳纤维</text><text x="163" y="299" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.5%</text><rect x="328" y="1" width="190" height="231" fill="rgb(54,134,80)" stroke="#fff" stroke-width="1"><title>镍金属 B1:-0.337 chg:-4.5% amt:375亿</title></rect><text x="423" y="113" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">镍金属</text><text x="423" y="128" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.5%</text><rect x="328" y="234" width="190" height="124" fill="rgb(59,139,84)" stroke="#fff" stroke-width="1"><title>降解塑料 B1:-0.316 chg:-4.0% amt:203亿</title></rect><text x="423" y="293" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">降解塑料</text><text x="423" y="308" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.0%</text></svg></div><div class="tg"><div class="tgn">游戏传媒</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="342" height="227" fill="rgb(47,127,73)" stroke="#fff" stroke-width="1"><title>元宇宙概念 B1:-0.399 chg:-5.3% amt:1234亿</title></rect><text x="172" y="111" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">元宇宙概念</text><text x="172" y="126" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.3%</text><rect x="1" y="230" width="342" height="128" fill="rgb(49,129,75)" stroke="#fff" stroke-width="1"><title>网络游戏 B1:-0.366 chg:-5.0% amt:700亿</title></rect><text x="172" y="291" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">网络游戏</text><text x="172" y="306" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.0%</text><rect x="345" y="1" width="173" height="154" fill="rgb(49,129,76)" stroke="#fff" stroke-width="1"><title>短剧游戏 B1:-0.347 chg:-5.0% amt:431亿</title></rect><text x="431" y="75" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">短剧游戏</text><text x="431" y="90" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.0%</text><rect x="345" y="157" width="173" height="111" fill="rgb(40,120,68)" stroke="#fff" stroke-width="1"><title>云游戏 B1:-0.336 chg:-5.9% amt:311亿</title></rect><text x="431" y="209" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">云游戏</text><text x="431" y="224" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.9%</text><rect x="345" y="270" width="173" height="88" fill="rgb(56,136,81)" stroke="#fff" stroke-width="1"><title>NFT概念 B1:-0.305 chg:-4.4% amt:247亿</title></rect><text x="431" y="311" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">NFT概念</text><text x="431" y="326" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.4%</text></svg></div><div class="tg"><div class="tgn">大消费</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="242" height="358" fill="rgb(55,135,80)" stroke="#fff" stroke-width="1"><title>智能家居 B1:-0.416 chg:-4.5% amt:1627亿</title></rect><text x="122" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">智能家居</text><text x="122" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.5%</text><rect x="245" y="1" width="118" height="358" fill="rgb(73,153,96)" stroke="#fff" stroke-width="1"><title>新零售 B1:-0.371 chg:-2.6% amt:800亿</title></rect><text x="304" y="177" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">新零售</text><text x="304" y="192" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-2.6%</text><rect x="365" y="1" width="153" height="108" fill="rgb(83,163,105)" stroke="#fff" stroke-width="1"><title>医美概念 B1:-0.370 chg:-1.7% amt:317亿</title></rect><text x="441" y="52" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">医美概念</text><text x="441" y="67" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-1.7%</text><rect x="365" y="111" width="153" height="62" fill="rgb(63,143,88)" stroke="#fff" stroke-width="1"><title>食品安全 B1:-0.313 chg:-3.6% amt:184亿</title></rect><text x="441" y="139" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">食品安全</text><text x="441" y="154" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.6%</text><rect x="365" y="175" width="153" height="64" fill="rgb(84,164,106)" stroke="#fff" stroke-width="1"><title>预制菜 B1:-0.304 chg:-1.5% amt:191亿</title></rect><text x="441" y="204" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">预制菜</text><text x="441" y="219" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-1.5%</text><rect x="365" y="241" width="153" height="117" fill="rgb(61,141,86)" stroke="#fff" stroke-width="1"><title>旅游概念 B1:-0.304 chg:-3.9% amt:342亿</title></rect><text x="441" y="296" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">旅游概念</text><text x="441" y="311" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.9%</text></svg></div><div class="tg"><div class="tgn">医药/医疗</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="65" height="200" fill="rgb(212,91,92)" stroke="#fff" stroke-width="1"><title>仿制药 B1:+0.485 chg:+0.8% amt:389亿</title></rect><text x="33" y="98" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">仿制药</text><text x="33" y="113" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">+0.8%</text><rect x="68" y="1" width="226" height="200" fill="rgb(71,151,95)" stroke="#fff" stroke-width="1"><title>智能医疗 B1:-0.438 chg:-2.9% amt:1317亿</title></rect><text x="181" y="98" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">智能医疗</text><text x="181" y="113" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-2.9%</text><rect x="1" y="203" width="128" height="155" fill="rgb(87,167,108)" stroke="#fff" stroke-width="1"><title>基因概念 B1:-0.390 chg:-1.3% amt:583亿</title></rect><text x="65" y="277" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">基因概念</text><text x="65" y="292" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-1.3%</text><rect x="131" y="203" width="163" height="155" fill="rgb(76,156,99)" stroke="#fff" stroke-width="1"><title>AI医疗概念 B1:-0.388 chg:-2.3% amt:741亿</title></rect><text x="212" y="277" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">AI医疗概念</text><text x="212" y="292" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-2.3%</text><rect x="297" y="1" width="148" height="114" fill="rgb(82,162,104)" stroke="#fff" stroke-width="1"><title>合成生物 B1:-0.377 chg:-1.8% amt:500亿</title></rect><text x="371" y="55" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">合成生物</text><text x="371" y="70" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-1.8%</text><rect x="447" y="1" width="71" height="114" fill="rgb(92,172,113)" stroke="#fff" stroke-width="1"><title>生物疫苗 B1:-0.376 chg:-0.8% amt:243亿</title></rect><text x="482" y="55" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">生物疫苗</text><text x="482" y="70" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-0.8%</text><rect x="297" y="117" width="221" height="174" fill="rgb(99,179,119)" stroke="#fff" stroke-width="1"><title>创新药 B1:-0.356 chg:-0.0% amt:1124亿</title></rect><text x="407" y="201" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">创新药</text><text x="407" y="216" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-0.0%</text><rect x="297" y="294" width="221" height="64" fill="rgb(91,171,112)" stroke="#fff" stroke-width="1"><title>CXO概念 B1:-0.356 chg:-0.8% amt:420亿</title></rect><text x="407" y="323" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">CXO概念</text><text x="407" y="338" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-0.8%</text></svg></div><div class="tg"><div class="tgn">消费电子</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="266" height="232" fill="rgb(33,113,61)" stroke="#fff" stroke-width="1"><title>消费电子概念 B1:-0.510 chg:-6.7% amt:5361亿</title></rect><text x="134" y="114" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">消费电子概念</text><text x="134" y="129" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.7%</text><rect x="1" y="235" width="266" height="123" fill="rgb(24,104,53)" stroke="#fff" stroke-width="1"><title>PCB概念 B1:-0.487 chg:-7.5% amt:2853亿</title></rect><text x="134" y="293" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">PCB概念</text><text x="134" y="308" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-7.5%</text><rect x="269" y="1" width="178" height="218" fill="rgb(39,119,67)" stroke="#fff" stroke-width="1"><title>智能穿戴 B1:-0.480 chg:-6.0% amt:3379亿</title></rect><text x="358" y="107" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">智能穿戴</text><text x="358" y="122" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.0%</text><rect x="449" y="1" width="69" height="218" fill="rgb(28,108,57)" stroke="#fff" stroke-width="1"><title>折叠屏 B1:-0.443 chg:-7.2% amt:1345亿</title></rect><text x="483" y="107" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">折叠屏</text><text x="483" y="122" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-7.2%</text><rect x="269" y="221" width="112" height="137" fill="rgb(43,123,70)" stroke="#fff" stroke-width="1"><title>无线耳机 B1:-0.424 chg:-5.6% amt:1361亿</title></rect><text x="325" y="286" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">无线耳机</text><text x="325" y="301" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.6%</text><rect x="383" y="221" width="135" height="137" fill="rgb(55,135,80)" stroke="#fff" stroke-width="1"><title>智能家居 B1:-0.416 chg:-4.5% amt:1627亿</title></rect><text x="450" y="286" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">智能家居</text><text x="450" y="301" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.5%</text></svg></div><div class="tg"><div class="tgn">电力电网</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="152" height="233" fill="rgb(50,130,76)" stroke="#fff" stroke-width="1"><title>核电核能 B1:-0.429 chg:-4.9% amt:1741亿</title></rect><text x="77" y="114" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">核电核能</text><text x="77" y="129" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.9%</text><rect x="155" y="1" width="154" height="233" fill="rgb(66,146,90)" stroke="#fff" stroke-width="1"><title>绿色电力 B1:-0.425 chg:-3.4% amt:1768亿</title></rect><text x="232" y="114" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">绿色电力</text><text x="232" y="129" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.4%</text><rect x="1" y="236" width="308" height="122" fill="rgb(50,130,76)" stroke="#fff" stroke-width="1"><title>智能电网 B1:-0.423 chg:-4.9% amt:1852亿</title></rect><text x="155" y="294" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">智能电网</text><text x="155" y="309" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.9%</text><rect x="311" y="1" width="115" height="200" fill="rgb(45,125,72)" stroke="#fff" stroke-width="1"><title>特高压 B1:-0.399 chg:-5.5% amt:1137亿</title></rect><text x="368" y="98" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">特高压</text><text x="368" y="113" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-5.5%</text><rect x="428" y="1" width="90" height="200" fill="rgb(58,138,83)" stroke="#fff" stroke-width="1"><title>节能环保 B1:-0.397 chg:-4.2% amt:896亿</title></rect><text x="473" y="98" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">节能环保</text><text x="473" y="113" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.2%</text><rect x="311" y="203" width="117" height="155" fill="rgb(57,137,82)" stroke="#fff" stroke-width="1"><title>虚拟电厂 B1:-0.386 chg:-4.2% amt:900亿</title></rect><text x="369" y="277" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">虚拟电厂</text><text x="369" y="292" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.2%</text><rect x="430" y="203" width="88" height="92" fill="rgb(56,136,82)" stroke="#fff" stroke-width="1"><title>雅江水电概念 B1:-0.334 chg:-4.3% amt:410亿</title></rect><text x="474" y="246" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">雅江水电概念</text><text x="474" y="261" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-4.3%</text><rect x="430" y="298" width="88" height="60" fill="rgb(69,149,92)" stroke="#fff" stroke-width="1"><title>超临界发电 B1:-0.328 chg:-3.1% amt:271亿</title></rect><text x="474" y="325" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">超临界发电</text><text x="474" y="340" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-3.1%</text></svg></div><div class="tg"><div class="tgn">军工/航天</div><svg width="520" height="360" viewBox="0 0 520 360" style="display:block;width:100%;height:auto"><rect x="1" y="1" width="180" height="276" fill="rgb(31,111,60)" stroke="#fff" stroke-width="1"><title>商业航天 B1:-0.508 chg:-6.8% amt:4740亿</title></rect><text x="91" y="136" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">商业航天</text><text x="91" y="151" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.8%</text><rect x="183" y="1" width="142" height="276" fill="rgb(32,112,61)" stroke="#fff" stroke-width="1"><title>国防军工 B1:-0.487 chg:-6.7% amt:3751亿</title></rect><text x="254" y="136" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">国防军工</text><text x="254" y="151" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.7%</text><rect x="1" y="279" width="325" height="79" fill="rgb(29,109,58)" stroke="#fff" stroke-width="1"><title>卫星导航 B1:-0.476 chg:-7.0% amt:2483亿</title></rect><text x="163" y="315" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">卫星导航</text><text x="163" y="330" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-7.0%</text><rect x="328" y="1" width="190" height="164" fill="rgb(37,117,65)" stroke="#fff" stroke-width="1"><title>无人机 B1:-0.468 chg:-6.2% amt:2977亿</title></rect><text x="423" y="80" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">无人机</text><text x="423" y="95" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.2%</text><rect x="328" y="167" width="190" height="99" fill="rgb(34,114,62)" stroke="#fff" stroke-width="1"><title>毫米波雷达 B1:-0.445 chg:-6.6% amt:1819亿</title></rect><text x="423" y="213" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">毫米波雷达</text><text x="423" y="228" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.6%</text><rect x="328" y="269" width="123" height="89" fill="rgb(32,112,60)" stroke="#fff" stroke-width="1"><title>大飞机 B1:-0.429 chg:-6.8% amt:1070亿</title></rect><text x="389" y="310" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">大飞机</text><text x="389" y="325" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-6.8%</text><rect x="454" y="269" width="64" height="89" fill="rgb(28,108,57)" stroke="#fff" stroke-width="1"><title>军工信息化 B1:-0.398 chg:-7.2% amt:570亿</title></rect><text x="486" y="310" text-anchor="middle" fill="#fff" font-size="9" font-weight="600">军工信息化</text><text x="486" y="325" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">-7.2%</text></svg></div></div>
+<div id="themeTopBar" class="theme-top"><span class="tbc"></span></div>
+</div>
+</div>
+
+
+<div class="ft">2026-07-13 16:13 · &copy; 2026 Zhubin · 数据来源通达信 · 仅限个人研究</div>
+<script>
+function toggleStocks(row){
+ var sub=row.nextElementSibling;
+ if(sub && sub.classList.contains('srw-sub')){
+  sub.style.display=sub.style.display==='none'?'block':'none';
+ }
+}
+// Theme pill click: highlight matching rows + show TOP5 stock bar
+(function(){
+ var themeTopStocks={"医药/医疗": [["陇神戎发", 20.0], ["上海凯宝", 15.8], ["哈药股份", 10.1], ["九芝堂", 10.0], ["康辰药业", 7.7]], "大消费": [["梅花生物", 3.0], ["海天味业", 2.0], ["美的集团", 1.8], ["恒顺醋业", 1.5], ["格力电器", 1.2]], "金融": [["苏州银行", 6.1], ["宁波银行", 5.1], ["渝农商行", 4.6], ["工商银行", 2.7], ["交通银行", 2.4]], "材料/资源": [["华锦股份", 5.2], ["陕西煤业", 4.5], ["中国石化", 2.5], ["中煤能源", 1.6], ["中国神华", 1.5]]};
+ var currentTheme=null;
+ var pills=document.querySelectorAll('.tp[data-sectors]');
+ var topBar=document.getElementById('themeTopBar');
+ pills.forEach(function(p){
+  p.addEventListener('click',function(){
+   var theme=this.textContent.replace(/<[^>]*>/g,'').split(/\d/)[0];
+   if(currentTheme===theme){
+    // Deselect
+    currentTheme=null;
+    this.classList.remove('active');
+    topBar.style.display='none';
+    document.querySelectorAll('.pn .r').forEach(function(r){r.classList.remove('hl')});
+    return;
+   }
+   // Deselect previous
+   if(currentTheme){
+    document.querySelectorAll('.tp.active').forEach(function(t){t.classList.remove('active')});
+   }
+   currentTheme=theme;
+   this.classList.add('active');
+   // Highlight matching sectors
+   var secs=(this.dataset.sectors||'').split(',');
+   document.querySelectorAll('.pn .r').forEach(function(r){
+    var nm=r.querySelector('.nm');
+    r.classList.toggle('hl', nm && secs.indexOf(nm.textContent.trim())>=0);
+   });
+   // Show TOP5 stocks
+   var stocks=themeTopStocks[theme];
+   if(stocks){
+    var html='<span class="tbclose" onclick="document.getElementById(\'themeTopBar\').style.display=\'none\';currentTheme=null">&times;</span>';
+    stocks.forEach(function(s){
+     var cls=s[1]>0?'up':'dn';
+     html+='<span class="tbs"><span class="tbn">'+s[0]+'</span><span class="tbr '+cls+'">'+(s[1]>0?'+':'')+s[1].toFixed(1)+'%</span></span>';
+    });
+    topBar.querySelector('.tbc').innerHTML=html;
+    topBar.style.display='flex';
+   }
+  });
+ });
+})();
+</script>
+<script>
+</script>
+</div></body></html>
